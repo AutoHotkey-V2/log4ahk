@@ -8,6 +8,7 @@ OutputDebug "DBGVIEWCLEAR"
 
 logger := new log4ahk()
 logger.loglevel.required := logger.loglevel.TRACE
+logger.layout.required := "[%L] #%M#"
 logger.trace("TRACE - Test TRACE")
 logger.debug("TRACE - Test DEBUG")
 logger.info("TRACE - Test INFO")
