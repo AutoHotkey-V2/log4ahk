@@ -379,7 +379,8 @@ indicate an Error.
 
 		current[] {
   		/* ---------------------------------------------------------------------------------------
-  		Property: current [get/set] - get/set the current loglevel
+  		Property: current [get/set] 
+		get/set the current loglevel
   		*/
 			get {
 				return  this._current
@@ -392,7 +393,11 @@ indicate an Error.
 
 		required[] {
   		/* ---------------------------------------------------------------------------------------
-  		Property: required [get/set] - get/set the required loglevel
+  		Property: required [get/set] 
+		get/set the required loglevel
+		
+		If a message is reuested to be logged, the <current> loglevel is compared against required loglevel.
+		If the current loglevel is greater/equal the required loglevel the message is logged - otherwise it is suppressed
   		*/
 			get {
 				return  this._required

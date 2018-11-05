@@ -1,1 +1,1 @@
-NDSearch.OnPrefixDataLoaded("cur",["Property"],[["current",,[["log4ahk.loglevel","current [get/set] - get/set the current loglevel",,"current[get/set]-get/set the current loglevel",0,"File:log4ahk.ahk:log4ahk.loglevel.current[get/set]-get/set_the_current_loglevel","AutoHotKeyClass:log4ahk.loglevel:current[get/set]-get/set_the_current_loglevel"]]]]);
+NDSearch.OnPrefixDataLoaded("cur",["Property"],[["current",,[["log4ahk.loglevel",,,,0,"File:log4ahk.ahk:log4ahk.loglevel.current","AutoHotKeyClass:log4ahk.loglevel:current"]]]]);
