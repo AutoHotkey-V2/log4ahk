@@ -1,0 +1,1 @@
+NDMenu.OnSectionLoaded("classes.js",[[1,"log4ahk"],[2,"log4ahk","AutoHotKeyClass:log4ahk.",[[1,"layout"],[1,"loglevel"]]]]);

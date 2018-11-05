@@ -4,7 +4,7 @@ This library uses [AutoHotkey Version 2](https://autohotkey.com/v2/). (Tested wi
 
 ## Description
 
-Simple logging with AutoHotkey - supporting some features as provided in [log4j](/https://logging.apache.org/log4j/2.x/) or [log4Perl](https://metacpan.org/pod/Log::Log4perl)
+Simple logging with AutoHotkey - supporting some features as provided in [log4j](https://logging.apache.org/log4j/2.x/) or [log4Perl](https://metacpan.org/pod/Log::Log4perl)
 
 ## Usage 
 
@@ -15,12 +15,19 @@ Include `log4ahk.ahk` from the `lib` folder into your project using standard Aut
 
 ; Initialize the logger
 logger := new log4ahk()
+; Set the layout for the messages
+logger.layout.required := "[%V] #%M# %m"
 ; Choose the desired loglevel
 logger.loglevel.required := logger.loglevel.INFO
 logger.trace("TraceTest") ; This Message should not be logged due to choosen loglevel
-logger.trace("InfoTest") ; This Message should be logged!
+logger.info("InfoTest") ; This Message should be logged!
 ```
 
 For usage examples have a look at the files *log4ahk_demoXX.ahk*.
 
-For more detailed documentation have a look into the source file *log4ahk.ahk*
+For more detailed documentation have a look into the source file *log4ahk.ahk* or html-documentation within subfolder "docs"
+
+## Limitations
+
+ * Documentation is incomplete
+ * Only logging via *OutputDebug* is currently available. To see the current logging output you have to run "dbgview.exe" (or another program, which is able to capture OutputDebug-output like [DebugView++](https://github.com/CobaltFusion/DebugViewPP)).

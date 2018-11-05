@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("_lo",["Function"],[["_log",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk._log","AutoHotKeyClass:log4ahk:_log"]]]]);

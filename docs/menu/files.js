@@ -1,0 +1,1 @@
+NDMenu.OnSectionLoaded("files.js",[[1,"log4ahk.ahk"]]);

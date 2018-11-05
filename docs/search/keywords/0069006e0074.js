@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("int",["Information"],[["Internals",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk.Internals","AutoHotKeyClass:log4ahk:Internals"]]]]);
