@@ -189,8 +189,8 @@ indicate an Error.
 		Loop tokens.Length() {
 			a := tokens[A_Index]
 			value := ""
-			if (a["Placeholder"] == "V") {
-				value := this._loglevel.tr(this._loglevel.current)
+			if (a["Placeholder"] == "H") {
+				value := A_ComputerName
 			}
 			else if (a["Placeholder"] == "m") {
 				value := str
@@ -199,6 +199,10 @@ indicate an Error.
 				cs:= CallStack(deepness := thiscalldepth+1)
 				value := cs[-thiscalldepth].function
 			}
+			else if (a["Placeholder"] == "V") {
+				value := this._loglevel.tr(this._loglevel.current)
+			}
+			
 			ph[a["Placeholder_decorated"]]  := value
 		}
 
@@ -253,9 +257,10 @@ indicate an Error.
 	Creates a pattern layout according to <log4j-layout: http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html> and a couple of log4ahk-specific extensions.
 
 	Placeholders: 
-	
+
 	The following placeholders can be used within the layout string:
 
+	%H - Hostname
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%V - Log level
@@ -303,7 +308,7 @@ indicate an Error.
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([.-]?[0-9]{0,3})([mMV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([.-]?[0-9]{0,3})([HmMV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []

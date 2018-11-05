@@ -15,10 +15,12 @@ Include `log4ahk.ahk` from the `lib` folder into your project using standard Aut
 
 ; Initialize the logger
 logger := new log4ahk()
+; Set the layout for the messages
+logger.layout.required := "[%V] #%M# %m"
 ; Choose the desired loglevel
 logger.loglevel.required := logger.loglevel.INFO
 logger.trace("TraceTest") ; This Message should not be logged due to choosen loglevel
-logger.trace("InfoTest") ; This Message should be logged!
+logger.info("InfoTest") ; This Message should be logged!
 ```
 
 For usage examples have a look at the files *log4ahk_demoXX.ahk*.
