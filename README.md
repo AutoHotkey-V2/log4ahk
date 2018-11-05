@@ -4,7 +4,7 @@ This library uses [AutoHotkey Version 2](https://autohotkey.com/v2/). (Tested wi
 
 ## Description
 
-Simple logging with AutoHotkey - supporting some features as provided in [log4j](/https://logging.apache.org/log4j/2.x/) or [log4Perl](https://metacpan.org/pod/Log::Log4perl)
+Simple logging with AutoHotkey - supporting some features as provided in [log4j](https://logging.apache.org/log4j/2.x/) or [log4Perl](https://metacpan.org/pod/Log::Log4perl)
 
 ## Usage 
 
