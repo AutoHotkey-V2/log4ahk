@@ -1,0 +1,1 @@
+NDContentPage.OnToolTipsLoaded({2:"<div class=\"NDToolTip TClass LAutoHotKey\"><div class=\"TTSummary\">A class that provides simple logging facilities for AutoHotkey</div></div>",20:"<div class=\"NDToolTip TClass LAutoHotKey\"><div class=\"TTSummary\">Helper class for log4ahk (Implementing loglevels)</div></div>"});

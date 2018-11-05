@@ -1,14 +1,29 @@
 /*
-Name: log4ahk - Logs given String to given device
-Version 0.1.0
-Author: hoppfrosch
-Description:
-  Logs the string to a given Device.
+Title: log4ahk - Logging for AutoHotkey 
+
+Logs given String to given device. For more details see <log4ahk>
   
-  Supported prefixes are currently:
-  * ">" - This should be used when a funtion is entered. On each usage of this Prefix the indentation level is increased
-    Example:  dbgOut(">[" A_ThisFunc "()]")
-  * "<" - This should be used when a funtion is exited. On each usage of this Prefix the indentation level is decreased
+Authors:
+<hoppfrosch at hoppfrosch@gmx.de>: Original
+
+License: 
+WTFPL License
+
+=== Code
+    DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+        Version 2, December 2004 
+
+Copyright (C) 2018 Johannes Kilian <hoppfrosch@gmx.de> 
+
+Everyone is permitted to copy and distribute verbatim or modified 
+copies of this license document, and changing it is allowed as long 
+as the name is changed. 
+
+DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+
+0 - You just DO WHAT THE FUCK YOU WANT TO.
+===   
 */
 
 ; ===================================================================================
@@ -22,8 +37,27 @@ Description:
 ; ===================================================================================
 #include CallStack\CallStack.ahk
 
-class log4ahk {
 
+class log4ahk {
+/*
+Class: log4ahk
+A class that provides simple logging facilities for AutoHotkey
+
+This log-Class supports 
+
+  - <Loglevels>
+  - Layout of the prepended string
+
+Loglevels: 
+
+Each message has to be logged on a certain loglevel. Consider the loglevel as the severity of the message 
+you want to log: some logmessages are used for simple debug purposes, whereas other logmessages may 
+indicate an Error.
+
+  - Different hiearchical loglevels are Supported
+  - The hierachy is *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
+
+*/
 	_version := "0.2.0"
 	shouldLog := 1
 	
@@ -31,163 +65,99 @@ class log4ahk {
 	static _indentLvl := 0
 	shouldIndent := 1
 
+	
 	; ##########################################################################
-	class layout {
-		_tokens := []
-
-		_expand(ph) {
-			str := this.required
-			Loop this.tokens.Length() {
-				PlaceholderExpanded := ph[this._tokens[A_Index]["Placeholder"]]
-				PatternExpanded := this._tokens[A_Index]["Quantifier"] PlaceholderExpanded this._tokens[A_Index]["Curly"]
-				str := RegExReplace(str, this._tokens[A_Index]["Pattern"], PatternExpanded)
-			}
-			return str
-		}
-
-		__New() {
-			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-			static init
-			if init
-					return init
-			init := This
-
-			this._split()
-		}
-
-		_split() {
-			FoundPos := 1
-    		len := 0
-			this._tokens := []
-
-			haystack := this.required
-			Pattern := "(%([.-]?[0-9]{0,3})([LM]{1})(\{[0-9]{1,2}\})?)"
-    		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
-      			len := Match.len(0)
-				token := []
-				token["Pattern"] := Match[1] 
-				token["Quantifier"] := Match[2] 
-				token["Placeholder"] := Match[3]
-				token["Curly"] := Match[4] 	 
-				this._tokens.Push(token)
-			}
-		}
-
-		required[] {
-		/* ---------------------------------------------------------------------------------------
-  		Property: required [get/set] - get/set the required loglevel
-  		*/
-			get {
-				return  this._required
-			}
-			set {
-				this._required := value
-				this._split()
-				return value
-			}
-  		}
-		tokens[] {
-		/* ---------------------------------------------------------------------------------------
-  		Property: tokens [get] - get the tokens of the current layout
-  		*/
-			get {
-				this._split()
-				return  this._tokens
-			}
-  		}
-	}
-
-	; ##########################################################################
-	class loglevel {
-		STATIC TRACE := 1
-		STATIC DEBUG := 2
-		STATIC INFO := 3
-		STATIC WARN := 4
-		STATIC ERROR := 5
-		STATIC FATAL := 6
-
-		tr(lvl){
-			; Translate the numeric loglevel into a string
-			translation := ["TRACE","DEBUG","INFO","WARN","ERROR","FATAL"]
-			if ((lvl >= this.TRACE) & (lvl <= this.FATAL)) {
-				return translation[lvl]
-			}
-			return "LOG"
-		}
-
-		__New() {
-			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-			static init
-			if init
-					return init
-			init := This
-
-			_required := 2
-			_current := 2
-		}
-
-		_limit(lvl) {
-			if (lvl < this.TRACE) {
-				return this.TRACE
-			}
-			if (lvl > this.FATAL) {
-				return this.FATAL
-			}
-			return lvl
-		}
-
-		current[] {
-  		/* ---------------------------------------------------------------------------------------
-  		Property: current [get/set] - get/set the current loglevel
-  		*/
-			get {
-				return  this._current
-			}
-			set {
-				this._current := this._limit(value)
-				return this._current
-			}
-		}
-
-		required[] {
-  		/* ---------------------------------------------------------------------------------------
-  		Property: required [get/set] - get/set the required loglevel
-  		*/
-			get {
-				return  this._required
-			}
-			set {
-				this._required := this._limit(value)
-				return this._required
-			}
-  		}
-	}
-	; ##########################################################################
+	; --------------------------------------------------------------------------------------
+	; Group: Public Methods		
 	trace(str) {
+	/*
+	Method: trace()
+	Logs the given string at TRACE level
+	
+	Parameters:
+	
+		str - String to be logged
+	*/
 		this._log(str, this._loglevel.TRACE)
 	}
 
 	debug(str) {
+	/*
+	Method: debug()
+	Logs the given string at DEBUG level
+	
+	Parameters:
+	
+		str - String to be logged
+	*/
 		this._log(str, this._loglevel.DEBUG)
 	}
 
 	info(str) {
+	/*
+	Method: info()
+	Logs the given string at INFO level
+	
+	Parameters:
+	
+		str - String to be logged
+	*/
 		this._log(str, this._loglevel.INFO)
 	}
 
 	warn(str) {
+	/*
+	Method: warn()
+	Logs the given string at WARN level
+	
+	Parameters:
+	
+		str - String to be logged
+	*/
 		this._log(str, this._loglevel.WARN)
 	}
 
 	error(str) {
+	/*
+	Method: error()
+	Logs the given string at ERROR level
+	
+	Parameters:
+	
+		str - String to be logged
+	*/
 		this._log(str, this._loglevel.ERROR)
 	}
 
 	fatal(str) {
+	/*
+	Method: fatal()
+	Logs the given string at TRACE level
+	
+	Parameters:
+	
+		str - String to be logged
+	*/
 		this._log(str, this._loglevel.FATAl)
 	}
 
+	; --------------------------------------------------------------------------------------
+	; Group: Private Methods		
 	_log(str, loglvl := 2)  {
+	/*
+	Method: _log()
+	Logs the given string at the given level
+	
+	Parameters:
+	
+		str - String to be logged
+		loglvl - level on which the given message is to be logged
+		
+	About: Internals
+	The given loglevel is compared against the global required fixlevel (see <required>) 
+	Is the given loglevel equal or greater the required loglevel the logmessage is printed 
+	- otherwise the logmessage is suppressed.
+	*/
 		if (!this.shouldLog)
 			return
 
@@ -268,5 +238,169 @@ class log4ahk {
 	}
 
 	; ##################### Start of Properties ##############################################
-	; ##################### Start of Properties ##############################################
+
+	; ##########################################################################
+	class layout {
+	/* 
+	Class: log4ahk.layout
+	Helper class for <log4ahk> (Implementing layout)
+	*/
+	
+		_tokens := []
+
+		; --------------------------------------------------------------------------------------
+		; Group: Private Methods
+		
+		_expand(ph) {
+		/*
+		Method: _expand(ph)
+		Expands the placeholders with the values from the given array
+		
+		Parameters:
+			ph - associative Array containing mapping placeholder to its replacement
+		*/
+			str := this.required
+			Loop this.tokens.Length() {
+				PlaceholderExpanded := ph[this._tokens[A_Index]["Placeholder"]]
+				PatternExpanded := this._tokens[A_Index]["Quantifier"] PlaceholderExpanded this._tokens[A_Index]["Curly"]
+				str := RegExReplace(str, this._tokens[A_Index]["Pattern"], PatternExpanded)
+			}
+			return str
+		}
+
+		__New() {
+			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
+			static init
+			if init
+					return init
+			init := This
+
+			this._split()
+		}
+
+		_split() {
+		/*
+		Method: _split()
+		Splits the layout into its tokens
+		*/
+			FoundPos := 1
+    		len := 0
+			this._tokens := []
+
+			haystack := this.required
+			Pattern := "(%([.-]?[0-9]{0,3})([LM]{1})(\{[0-9]{1,2}\})?)"
+    		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
+      			len := Match.len(0)
+				token := []
+				token["Pattern"] := Match[1] 
+				token["Quantifier"] := Match[2] 
+				token["Placeholder"] := Match[3]
+				token["Curly"] := Match[4] 	 
+				this._tokens.Push(token)
+			}
+		}
+
+		; --------------------------------------------------------------------------------------
+		; Group: Properties
+		
+		required[] {
+		/*
+  		Property: required [get/set] 
+		Get/set the required layout
+  		*/
+			get {
+				return  this._required
+			}
+			set {
+				this._required := value
+				this._split()
+				return value
+			}
+  		}
+		tokens[] {
+		/*
+  		Property: tokens [get] 
+		Get the tokens of the current layout
+		
+		Internals:
+		The layout string is separated into its separate layout elements (tokens). For example "%8L %M" 
+		consists of two tokens: "%8L" and "%M". Each token starts with "%" and ends at the next space. 
+		The tokens are split up into its separate parts.
+  		*/
+			get {
+				this._split()
+				return  this._tokens
+			}
+  		}
+	}
+
+	; ##########################################################################
+	/* 
+	Class: log4ahk.loglevel
+	Helper class for <log4ahk> (Implementing loglevels)
+	*/
+	class loglevel {
+		STATIC TRACE := 1
+		STATIC DEBUG := 2
+		STATIC INFO := 3
+		STATIC WARN := 4
+		STATIC ERROR := 5
+		STATIC FATAL := 6
+
+		tr(lvl){
+			; Translate the numeric loglevel into a string
+			translation := ["TRACE","DEBUG","INFO","WARN","ERROR","FATAL"]
+			if ((lvl >= this.TRACE) & (lvl <= this.FATAL)) {
+				return translation[lvl]
+			}
+			return "LOG"
+		}
+
+		__New() {
+			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
+			static init
+			if init
+					return init
+			init := This
+
+			_required := 2
+			_current := 2
+		}
+
+		_limit(lvl) {
+			if (lvl < this.TRACE) {
+				return this.TRACE
+			}
+			if (lvl > this.FATAL) {
+				return this.FATAL
+			}
+			return lvl
+		}
+
+		current[] {
+  		/* ---------------------------------------------------------------------------------------
+  		Property: current [get/set] - get/set the current loglevel
+  		*/
+			get {
+				return  this._current
+			}
+			set {
+				this._current := this._limit(value)
+				return this._current
+			}
+		}
+
+		required[] {
+  		/* ---------------------------------------------------------------------------------------
+  		Property: required [get/set] - get/set the required loglevel
+  		*/
+			get {
+				return  this._required
+			}
+			set {
+				this._required := this._limit(value)
+				return this._required
+			}
+  		}
+	}
 }
