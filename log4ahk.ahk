@@ -58,7 +58,7 @@ indicate an Error.
   - The hierachy is *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
 
 */
-	_version := "0.2.0"
+	_version := "0.3.0"
 	shouldLog := 1
 	
 	mode := 0 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
@@ -164,24 +164,24 @@ indicate an Error.
 		this._logLevel.current := loglvl
 
 		if (this._loglevel.required <= this._logLevel.current  ) {
-			placeholders := this._fillLayoutPlaceholders() ; Expand the layout placeholders with current values
+			placeholders := this._fillLayoutPlaceholders(str) ; Expand the layout placeholders with current values
 			layoutexpanded := this._layout._expand(placeholders) ; Generate the layout string
-
-			out := layoutexpanded " " this._indent(str)
 			if (this.mode = 0) {
-				OutputDebug(out)
+				OutputDebug(layoutexpanded)
 			}
 			else if (this.mode = 1) {
-				FileAppend out "`n", "*"
+				FileAppend layoutexpanded "`n", "*"
 			}
 			else {
-				MsgBox(out)
+				MsgBox(layoutexpanded)
 			}
 		}
 		return
 	}
   
-	_fillLayoutPlaceholders() {
+	_fillLayoutPlaceholders(str := "") {
+		currStringCaseSense := A_StringCaseSense 
+		StringCaseSense "On"
 		tokens := this._layout.tokens
 		ph := []
 		thiscalldepth := 3
@@ -189,15 +189,20 @@ indicate an Error.
 		Loop tokens.Length() {
 			a := tokens[A_Index]
 			value := ""
-			if (a["Placeholder"] == "L") {
+			if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
 			}
-			else if a["Placeholder"] == "M" {
+			else if (a["Placeholder"] == "m") {
+				value := str
+			}
+			else if (a["Placeholder"] =="M") {
 				cs:= CallStack(deepness := thiscalldepth+1)
 				value := cs[-thiscalldepth].function
 			}
-			ph[a["Placeholder"]]  := value
+			ph[a["Placeholder_decorated"]]  := value
 		}
+
+		StringCaseSense currStringCaseSense
 		return ph
 	}
 
@@ -244,6 +249,16 @@ indicate an Error.
 	/* 
 	Class: log4ahk.layout
 	Helper class for <log4ahk> (Implementing layout)
+
+	Creates a pattern layout according to <log4j-layout: http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html> and a couple of log4ahk-specific extensions.
+
+	Placeholders: 
+	
+	The following placeholders can be used within the layout string:
+
+	%m - The message to be logged
+	%M - Method or function where the logging request was issued
+	%V - Log level
 	*/
 	
 		_tokens := []
@@ -261,7 +276,7 @@ indicate an Error.
 		*/
 			str := this.required
 			Loop this.tokens.Length() {
-				PlaceholderExpanded := ph[this._tokens[A_Index]["Placeholder"]]
+				PlaceholderExpanded := ph[this._tokens[A_Index]["Placeholder_decorated"]]
 				PatternExpanded := this._tokens[A_Index]["Quantifier"] PlaceholderExpanded this._tokens[A_Index]["Curly"]
 				str := RegExReplace(str, this._tokens[A_Index]["Pattern"], PatternExpanded)
 			}
@@ -288,13 +303,18 @@ indicate an Error.
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([.-]?[0-9]{0,3})([LM]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([.-]?[0-9]{0,3})([mMV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
 				token["Pattern"] := Match[1] 
 				token["Quantifier"] := Match[2] 
-				token["Placeholder"] := Match[3]
+				placeholder := Match[3]
+				token["Placeholder"] := placeholder
+				; Lowercase Placeholders are decorated with a leading underscore
+				; This is neccessary due to case-insensitivity of keys in associative arrays in AutoHotkey
+				placeholder := RegExReplace(placeholder, "([a-z]{1})" , "_" "$1")
+				token["Placeholder_decorated"] := placeholder
 				token["Curly"] := Match[4] 	 
 				this._tokens.Push(token)
 			}
@@ -323,8 +343,8 @@ indicate an Error.
 		Get the tokens of the current layout
 		
 		Internals:
-		The layout string is separated into its separate layout elements (tokens). For example "%8L %M" 
-		consists of two tokens: "%8L" and "%M". Each token starts with "%" and ends at the next space. 
+		The layout string is separated into its separate layout elements (tokens). For example "%8V %M" 
+		consists of two tokens: "%8V" and "%M". Each token starts with "%" and ends at the next space. 
 		The tokens are split up into its separate parts.
   		*/
 			get {
