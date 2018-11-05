@@ -25,4 +25,9 @@ logger.info("InfoTest") ; This Message should be logged!
 
 For usage examples have a look at the files *log4ahk_demoXX.ahk*.
 
-For more detailed documentation have a look into the source file *log4ahk.ahk*
+For more detailed documentation have a look into the source file *log4ahk.ahk* or html-documentation within subfolder "docs"
+
+## Limitations
+
+ * Documentation is incomplete
+ * Only logging via *OutputDebug* is currently available. To see the current logging output you have to run "dbgview.exe" (or another program, which is able to capture OutputDebug-output like [DebugView++](https://github.com/CobaltFusion/DebugViewPP)).
