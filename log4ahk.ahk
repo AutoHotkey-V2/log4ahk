@@ -58,7 +58,7 @@ indicate an Error.
   - The hierachy is *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
 
 */
-	_version := "0.3.0"
+	_version := "0.3.1"
 	shouldLog := 1
 	
 	mode := 0 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
@@ -264,6 +264,15 @@ indicate an Error.
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%V - Log level
+
+	Quantify Placeholders:
+
+	All placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>:
+
+	%20M - Reserve 20 chars for the method, right-justify and fill with blanks if it is shorter
+	%-20M - Same as %20c, but left-justify and fill the right side with blanks
+    %09r - Zero-pad the number of milliseconds to 9 digits
+    %.8M - Specify the maximum field with and have the formatter cut off the rest of the value
 	*/
 	
 		_tokens := []
@@ -282,9 +291,13 @@ indicate an Error.
 			str := this.required
 			Loop this.tokens.Length() {
 				PlaceholderExpanded := ph[this._tokens[A_Index]["Placeholder_decorated"]]
-				PatternExpanded := this._tokens[A_Index]["Quantifier"] PlaceholderExpanded this._tokens[A_Index]["Curly"]
+				if (this._tokens[A_Index]["Quantifier"]) {
+					FormatQuantify := "{1:" this._tokens[A_Index]["Quantifier"] "s}"
+					PlaceholderExpanded := Format(FormatQuantify, PlaceholderExpanded)
+				}
+				PatternExpanded := PlaceholderExpanded this._tokens[A_Index]["Curly"]
 				str := RegExReplace(str, this._tokens[A_Index]["Pattern"], PatternExpanded)
-			}
+							}
 			return str
 		}
 
@@ -308,7 +321,7 @@ indicate an Error.
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([.-]?[0-9]{0,3})([HmMV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([HmMV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
