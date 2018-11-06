@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("_fi",["Function"],[["_fillLayoutPlaceholders",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk._fillLayoutPlaceholders","AutoHotKeyClass:log4ahk:_fillLayoutPlaceholders"]]]]);
