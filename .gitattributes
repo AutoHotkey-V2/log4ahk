@@ -5,3 +5,4 @@
 .gitmodules export-ignore
 README.md export-ignore
 _build export-ignore
+log4ahk.code-workspace export-ignore

@@ -45,20 +45,58 @@ A class that provides simple logging facilities for AutoHotkey
 
 This log-Class supports 
 
-  - <Loglevels>
-  - Layout of the prepended string
+  - <Loglevel> allows to define to a hierarchy of log messages and controls which messages are logged
+  - <Layout> of the logged message
 
 Loglevels: 
 
-Each message has to be logged on a certain loglevel. Consider the loglevel as the severity of the message 
+Each message has to be logged on a certain <loglevel>. Consider the loglevel as the severity of the message 
 you want to log: some logmessages are used for simple debug purposes, whereas other logmessages may 
-indicate an Error.
+indicate an Error. In some situations you want to see a very detailled logging - in other situations you just 
+want to be notified about errors ... Both can be managed via <loglevel>. 
 
-  - Different hiearchical loglevels are Supported
-  - The hierachy is *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
+Layout:
 
+Layouts allow to determine the format of the messages to be logged (see <layout>)
+
+Internals:
+<log4ahk> is implemented as singleton, so there is only one existing instance. Each change on <loglevel>,
+<layout> will be a global change and be valid from the time of change.
+
+Example:
+=== Autohotkey ===========
+#include log4ahk.ahk
+
+logger := new log4ahk()
+; Set the loglevel to be filtered upon
+logger.loglevel.required := logger.loglevel.TRACE
+; Show loglevel, current function, computername and log message in log protocol
+logger.layout.required := "[%-5.5V] {%-15.15M}{%H} %m"
+logger.trace("TRACE - Test TRACE") 
+logger.debug("TRACE - Test DEBUG")
+logger.info("TRACE - Test INFO")
+
+f1()
+return
+
+;########################################################
+f1() {
+	logger := new log4ahk()
+	Change the loglevel to be filtered upon
+	logger.loglevel.required := logger.loglevel.INFO
+	logger.trace("INFO - Test TRACE") ; shouldn't be logged due to required loglevel
+	logger.debug("INFO - Test DEBUG") ; shouldn't be logged due to required loglevel
+	logger.info("INFO - Test INFO")
+}
+
+; Output: 
+;[TRACE] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test TRACE
+;[DEBUG] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test DEBUG
+;[INFO ] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test INFO
+;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
+===
 */
-	_version := "0.3.0"
+	_version := "0.3.1"
 	shouldLog := 1
 	
 	mode := 0 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
@@ -69,83 +107,84 @@ indicate an Error.
 	; ##########################################################################
 	; --------------------------------------------------------------------------------------
 	; Group: Public Methods		
-	trace(str) {
+
 	/*
-	Method: trace()
+	Method: trace
 	Logs the given string at TRACE level
 	
 	Parameters:
 	
 		str - String to be logged
 	*/
+	trace(str) {
 		this._log(str, this._loglevel.TRACE)
 	}
 
-	debug(str) {
 	/*
-	Method: debug()
+	Method: debug
 	Logs the given string at DEBUG level
 	
 	Parameters:
 	
 		str - String to be logged
 	*/
+	debug(str) {
 		this._log(str, this._loglevel.DEBUG)
 	}
 
-	info(str) {
 	/*
-	Method: info()
+	Method: info
 	Logs the given string at INFO level
 	
 	Parameters:
 	
 		str - String to be logged
 	*/
+	info(str) {
 		this._log(str, this._loglevel.INFO)
 	}
 
-	warn(str) {
 	/*
-	Method: warn()
+	Method: warn
 	Logs the given string at WARN level
 	
 	Parameters:
 	
 		str - String to be logged
 	*/
+	warn(str) {
 		this._log(str, this._loglevel.WARN)
 	}
 
-	error(str) {
 	/*
-	Method: error()
+	Method: error
 	Logs the given string at ERROR level
 	
 	Parameters:
 	
 		str - String to be logged
 	*/
+	error(str) {
 		this._log(str, this._loglevel.ERROR)
 	}
 
-	fatal(str) {
 	/*
-	Method: fatal()
+	Method: fatal
 	Logs the given string at TRACE level
 	
 	Parameters:
 	
 		str - String to be logged
 	*/
+	fatal(str) {
 		this._log(str, this._loglevel.FATAl)
 	}
 
 	; --------------------------------------------------------------------------------------
-	; Group: Private Methods		
-	_log(str, loglvl := 2)  {
+	; Group: Private Methods
+
 	/*
-	Method: _log()
+	Method: _log
 	Logs the given string at the given level
 	
 	Parameters:
@@ -153,11 +192,12 @@ indicate an Error.
 		str - String to be logged
 		loglvl - level on which the given message is to be logged
 		
-	About: Internals
+	Internals:
 	The given loglevel is compared against the global required fixlevel (see <required>) 
 	Is the given loglevel equal or greater the required loglevel the logmessage is printed 
 	- otherwise the logmessage is suppressed.
-	*/
+	*/		
+	_log(str, loglvl := 2)  {
 		if (!this.shouldLog)
 			return
 
@@ -179,6 +219,14 @@ indicate an Error.
 		return
 	}
   
+  	/*
+	Method: _fillLayoutPlaceholders
+	Fills some variables needed by <layout> with the currently valid values. 
+	
+	Parameters:
+	
+		str - String to be logged
+	*/			
 	_fillLayoutPlaceholders(str := "") {
 		currStringCaseSense := A_StringCaseSense 
 		StringCaseSense "On"
@@ -264,6 +312,15 @@ indicate an Error.
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%V - Log level
+
+	Quantify Placeholders:
+
+	All placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>:
+
+	%20M - Reserve 20 chars for the method, right-justify and fill with blanks if it is shorter
+	%-20M - Same as %20c, but left-justify and fill the right side with blanks
+    %09r - Zero-pad the number of milliseconds to 9 digits
+    %.8M - Specify the maximum field with and have the formatter cut off the rest of the value
 	*/
 	
 		_tokens := []
@@ -271,20 +328,24 @@ indicate an Error.
 		; --------------------------------------------------------------------------------------
 		; Group: Private Methods
 		
-		_expand(ph) {
 		/*
-		Method: _expand(ph)
+		Method: _expand
 		Expands the placeholders with the values from the given array
 		
 		Parameters:
 			ph - associative Array containing mapping placeholder to its replacement
 		*/
+		_expand(ph) {
 			str := this.required
 			Loop this.tokens.Length() {
 				PlaceholderExpanded := ph[this._tokens[A_Index]["Placeholder_decorated"]]
-				PatternExpanded := this._tokens[A_Index]["Quantifier"] PlaceholderExpanded this._tokens[A_Index]["Curly"]
+				if (this._tokens[A_Index]["Quantifier"]) {
+					FormatQuantify := "{1:" this._tokens[A_Index]["Quantifier"] "s}"
+					PlaceholderExpanded := Format(FormatQuantify, PlaceholderExpanded)
+				}
+				PatternExpanded := PlaceholderExpanded this._tokens[A_Index]["Curly"]
 				str := RegExReplace(str, this._tokens[A_Index]["Pattern"], PatternExpanded)
-			}
+							}
 			return str
 		}
 
@@ -298,17 +359,32 @@ indicate an Error.
 			this._split()
 		}
 
-		_split() {
 		/*
-		Method: _split()
+		Method: _split
 		Splits the layout into its tokens
+
+		Internals:
+		The layout string is separated into its separate layout elements (tokens). For example "%8V %M" 
+		consists of two tokens: "%8V" and "%M". Each token starts with "%" and ends at the next space. 
+
+		The tokens are split up into its separate parts: each token consists of three parts:
+		
+		Quantifier - All placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>
+		Placeholder - Placeholders are replaced with the corresponding information
+		Curlies - Curlies allow further manipulation of the placeholders
+
+		As a result of the function, the property <tokens> is filled with objects, which contain the complete token as well as its single parts.
+
+		For more information, which values are allowed for quantifiers, placeholders and curlies have a look at documentation
+		of class <layout>
 		*/
+		_split() {
 			FoundPos := 1
     		len := 0
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([.-]?[0-9]{0,3})([HmMV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([HmMV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
@@ -331,7 +407,7 @@ indicate an Error.
 		required[] {
 		/*
   		Property: required [get/set] 
-		Get/set the required layout
+		Get/set the required layout. This layout will be used to format the logged message.
   		*/
 			get {
 				return  this._required
@@ -347,11 +423,8 @@ indicate an Error.
   		Property: tokens [get] 
 		Get the tokens of the current layout
 		
-		Internals:
-		The layout string is separated into its separate layout elements (tokens). For example "%8V %M" 
-		consists of two tokens: "%8V" and "%M". Each token starts with "%" and ends at the next space. 
-		The tokens are split up into its separate parts.
-  		*/
+		For more information see <_split>
+		*/
 			get {
 				this._split()
 				return  this._tokens
@@ -363,6 +436,17 @@ indicate an Error.
 	/* 
 	Class: log4ahk.loglevel
 	Helper class for <log4ahk> (Implementing loglevels)
+
+	Loglevels support the following needs
+
+		- hierarchize your log messages due to importance of the log message (from TRACE to FATAL)
+		- control which level of log messages are currently to be logged
+
+	Internals:
+		- Different hierarchical loglevels are supported
+  		- The hierachy levels are *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
+		- to log on a certain loglevel, separate methods are available (<trace>, <debug>, <info>, <warn>, <error>, <fatal>)
+		- To filter message to due current used loglevel use following syntax, set the property logger.loglevel.required to the requested level
 	*/
 	class loglevel {
 		STATIC TRACE := 1
@@ -372,8 +456,21 @@ indicate an Error.
 		STATIC ERROR := 5
 		STATIC FATAL := 6
 
+		; --------------------------------------------------------------------------------------
+		; Group: Private Methods		
+
+		/*
+		Method: tr
+		Translate the numeric loglevel into a string
+	
+		Parameters:
+	
+		lvl - Numerical loglevel
+		
+		Returns:
+		String describing the choosen loglevel (to be used within <layout>)
+		*/
 		tr(lvl){
-			; Translate the numeric loglevel into a string
 			translation := ["TRACE","DEBUG","INFO","WARN","ERROR","FATAL"]
 			if ((lvl >= this.TRACE) & (lvl <= this.FATAL)) {
 				return translation[lvl]
@@ -392,6 +489,17 @@ indicate an Error.
 			_current := 2
 		}
 
+		/*
+		Method: _limit
+		Validate the loglevel
+	
+		Parameters:
+	
+		lvl - loglevel to be checked
+		
+		Returns:
+		corrected loglevel
+		*/
 		_limit(lvl) {
 			if (lvl < this.TRACE) {
 				return this.TRACE
@@ -402,6 +510,8 @@ indicate an Error.
 			return lvl
 		}
 
+		; --------------------------------------------------------------------------------------
+		; Group: Properties
 		current[] {
   		/* ---------------------------------------------------------------------------------------
   		Property: current [get/set] 

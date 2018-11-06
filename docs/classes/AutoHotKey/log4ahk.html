@@ -10,7 +10,7 @@
 
 <a name="Topic2"></a><div class="CTopic TClass LAutoHotKey first">
  <div class="CTitle">log4ahk</div>
- <div class="CBody"><p>A class that provides simple logging facilities for AutoHotkey</p><p>This log-Class supports</p><ul><li><p><a href="../../index.html#AutoHotKeyClass:log4ahk.loglevel" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,20);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Loglevels</a></p></li><li><p>Layout of the prepended string</p></li></ul><div class="CHeading">Loglevels</div><p>Each message has to be logged on a certain loglevel. Consider the loglevel as the severity of the message you want to log: some logmessages are used for simple debug purposes, whereas other logmessages may indicate an Error.</p><ul><li><p>Different hiearchical loglevels are Supported</p></li><li><p>The hierachy is <b>trace</b> (1) &lt;- <b>debug</b> (2) &lt;- <b>info</b> (3) &lt;- <b>warn</b> (4) &lt;- <b>error</b> (5) &lt;- <b>fatal</b> (6)</p></li></ul></div>
+ <div class="CBody"><p>A class that provides simple logging facilities for AutoHotkey</p><p>This log-Class supports</p><ul><li><p><a href="../../index.html#AutoHotKeyClass:log4ahk.loglevel" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,20);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Loglevel</a> allows to define to a hierarchy of log messages and controls which messages are logged</p></li><li><p><a href="../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Layout</a> of the logged message</p></li></ul><div class="CHeading">Loglevels</div><p>Each message has to be logged on a certain <a href="../../index.html#AutoHotKeyClass:log4ahk.loglevel" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,20);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >loglevel</a>. Consider the loglevel as the severity of the message you want to log: some logmessages are used for simple debug purposes, whereas other logmessages may indicate an Error. In some situations you want to see a very detailled logging - in other situations you just want to be notified about errors ... Both can be managed via <a href="../../index.html#AutoHotKeyClass:log4ahk.loglevel" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,20);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >loglevel</a>.</p><div class="CHeading">Layout</div><p>Layouts allow to determine the format of the messages to be logged (see <a href="../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >layout</a>)</p><div class="CHeading">Internals</div><p><a href="../../index.html#AutoHotKeyClass:log4ahk" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,2);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >log4ahk</a> is implemented as singleton, so there is only one existing instance. Each change on <a href="../../index.html#AutoHotKeyClass:log4ahk.loglevel" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,20);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >loglevel</a>, <a href="../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >layout</a> will be a global change and be valid from the time of change.</p><div class="CHeading">Example</div><pre>#include log4ahk.ahk<br /><br />logger := <span class="SHKeyword">new</span> log4ahk()<br /><span class="SHComment">; Set the loglevel to be filtered upon</span><br />logger.loglevel.required := logger.loglevel.TRACE<br /><span class="SHComment">; Show loglevel, current function, computername and log message in log protocol</span><br />logger.layout.required := <span class="SHString">&quot;[%-5.5V] {%-15.15M}{%H} %m&quot;</span><br />logger.trace(<span class="SHString">&quot;TRACE - Test TRACE&quot;</span>)<br />logger.debug(<span class="SHString">&quot;TRACE - Test DEBUG&quot;</span>)<br />logger.info(<span class="SHString">&quot;TRACE - Test INFO&quot;</span>)<br /><br />f1()<br /><span class="SHKeyword">return</span><br /><br /><span class="SHComment">;########################################################</span><br />f1() {<br />    logger := <span class="SHKeyword">new</span> log4ahk()<br />    Change the loglevel to be filtered upon<br />    logger.loglevel.required := logger.loglevel.INFO<br />    logger.trace(<span class="SHString">&quot;INFO - Test TRACE&quot;</span>) <span class="SHComment">; shouldn't be logged due to required loglevel</span><br />    logger.debug(<span class="SHString">&quot;INFO - Test DEBUG&quot;</span>) <span class="SHComment">; shouldn't be logged due to required loglevel</span><br />    logger.info(<span class="SHString">&quot;INFO - Test INFO&quot;</span>)<br />}<br /><br /><span class="SHComment">; Output:</span><br /><span class="SHComment">;[TRACE] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test TRACE</span><br /><span class="SHComment">;[DEBUG] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test DEBUG</span><br /><span class="SHComment">;[INFO ] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test INFO</span><br /><span class="SHComment">;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO</span></pre></div>
 </div>
 
 <a name="Public_Methods"></a><a name="Topic3"></a><div class="CTopic TGroup LAutoHotKey">
@@ -18,38 +18,38 @@
 </div>
 
 <a name="trace"></a><a name="Topic4"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">trace()</div>
- <div id="NDPrototype4" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">this</span>._log(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str,</td></tr><tr><td class="PName first last">this._loglevel.TRACE</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CTitle">trace</div>
+ <div id="NDPrototype4" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">trace(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Logs the given string at TRACE level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr></table></div>
 </div>
 
 <a name="debug"></a><a name="Topic5"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">debug()</div>
- <div id="NDPrototype5" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">this</span>._log(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str,</td></tr><tr><td class="PName first last">this._loglevel.DEBUG</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CTitle">debug</div>
+ <div id="NDPrototype5" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">debug(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Logs the given string at DEBUG level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr></table></div>
 </div>
 
 <a name="info"></a><a name="Topic6"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">info()</div>
- <div id="NDPrototype6" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">this</span>._log(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str,</td></tr><tr><td class="PName first last">this._loglevel.INFO</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CTitle">info</div>
+ <div id="NDPrototype6" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">info(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Logs the given string at INFO level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr></table></div>
 </div>
 
 <a name="warn"></a><a name="Topic7"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">warn()</div>
- <div id="NDPrototype7" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">this</span>._log(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str,</td></tr><tr><td class="PName first last">this._loglevel.WARN</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CTitle">warn</div>
+ <div id="NDPrototype7" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">warn(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Logs the given string at WARN level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr></table></div>
 </div>
 
 <a name="error"></a><a name="Topic8"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">error()</div>
- <div id="NDPrototype8" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">this</span>._log(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str,</td></tr><tr><td class="PName first last">this._loglevel.ERROR</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CTitle">error</div>
+ <div id="NDPrototype8" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">error(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Logs the given string at ERROR level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr></table></div>
 </div>
 
 <a name="fatal"></a><a name="Topic9"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">fatal()</div>
- <div id="NDPrototype9" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">this</span>._log(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str,</td></tr><tr><td class="PName first last">this._loglevel.FATAl</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CTitle">fatal</div>
+ <div id="NDPrototype9" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">fatal(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">str</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Logs the given string at TRACE level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr></table></div>
 </div>
 
@@ -58,13 +58,15 @@
 </div>
 
 <a name="_log"></a><a name="Topic11"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">_log()</div>
- <div class="CBody"><p>Logs the given string at the given level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr><tr><td class="CDLEntry">loglvl</td><td class="CDLDefinition"><p>level on which the given message is to be logged</p></td></tr></table></div>
+ <div class="CTitle">_log</div>
+ <div id="NDPrototype11" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">_log(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first">str,</td><td></td><td class="last"></td></tr><tr><td class="PName first">loglvl&nbsp;</td><td class="PDefaultValueSeparator">:=&nbsp;</td><td class="PDefaultValue last"><span class="SHNumber">2</span></td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CBody"><p>Logs the given string at the given level</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr><tr><td class="CDLEntry">loglvl</td><td class="CDLDefinition"><p>level on which the given message is to be logged</p></td></tr></table><div class="CHeading">Internals</div><p>The given loglevel is compared against the global required fixlevel (see &lt;required&gt;) Is the given loglevel equal or greater the required loglevel the logmessage is printed - otherwise the logmessage is suppressed.</p></div>
 </div>
 
-<a name="Internals"></a><a name="Topic12"></a><div class="CTopic TInformation LAutoHotKey last">
- <div class="CTitle">Internals</div>
- <div class="CBody"><p>The given loglevel is compared against the global required fixlevel (see &lt;required&gt;) Is the given loglevel equal or greater the required loglevel the logmessage is printed - otherwise the logmessage is suppressed.</p></div>
+<a name="_fillLayoutPlaceholders"></a><a name="Topic12"></a><div class="CTopic TFunction LAutoHotKey last">
+ <div class="CTitle">_fillLayoutPlaceholders</div>
+ <div id="NDPrototype12" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">_fillLayoutPlaceholders(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first">str&nbsp;</td><td class="PDefaultValueSeparator">:=&nbsp;</td><td class="PDefaultValue last"><span class="SHString">&quot;&quot;</span></td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CBody"><p>Fills some variables needed by <a href="../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >layout</a> with the currently valid values.</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">str</td><td class="CDLDefinition"><p>String to be logged</p></td></tr></table></div>
 </div>
 
 </body></html>

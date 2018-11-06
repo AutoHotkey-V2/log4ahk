@@ -25,7 +25,7 @@ logger.info("InfoTest") ; This Message should be logged!
 
 For usage examples have a look at the files *log4ahk_demoXX.ahk*.
 
-For more detailed documentation have a look into the source file *log4ahk.ahk* or html-documentation within subfolder "docs"
+For more detailed documentation have a look into the source file *log4ahk.ahk* or online [html-documentation](https://autohotkey-v2.github.io/log4ahk/)
 
 ## Limitations
 

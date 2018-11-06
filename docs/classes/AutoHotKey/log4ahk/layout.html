@@ -10,7 +10,7 @@
 
 <a name="Topic13"></a><div class="CTopic TClass LAutoHotKey first">
  <div class="CTitle"><span class="Qualifier">log4ahk.</span>&#8203;layout</div>
- <div class="CBody"><p>Helper class for <a href="../../../index.html#AutoHotKeyClass:log4ahk" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,2);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >log4ahk</a> (Implementing layout)</p><p>Creates a pattern layout according to <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html" target="_top">log4j-layout</a> and a couple of log4ahk-specific extensions.</p><div class="CHeading">Placeholders</div><p>The following placeholders can be used within the layout string:</p><table class="CDefinitionList"><tr><td class="CDLEntry">%H</td><td class="CDLDefinition"><p>Hostname</p></td></tr><tr><td class="CDLEntry">%m</td><td class="CDLDefinition"><p>The message to be logged</p></td></tr><tr><td class="CDLEntry">%M</td><td class="CDLDefinition"><p>Method or function where the logging request was issued</p></td></tr><tr><td class="CDLEntry">%V</td><td class="CDLDefinition"><p>Log level</p></td></tr></table></div>
+ <div class="CBody"><p>Helper class for <a href="../../../index.html#AutoHotKeyClass:log4ahk" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,2);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >log4ahk</a> (Implementing layout)</p><p>Creates a pattern layout according to <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html" target="_top">log4j-layout</a> and a couple of log4ahk-specific extensions.</p><div class="CHeading">Placeholders</div><p>The following placeholders can be used within the layout string:</p><table class="CDefinitionList"><tr><td class="CDLEntry">%H</td><td class="CDLDefinition"><p>Hostname</p></td></tr><tr><td class="CDLEntry">%m</td><td class="CDLDefinition"><p>The message to be logged</p></td></tr><tr><td class="CDLEntry">%M</td><td class="CDLDefinition"><p>Method or function where the logging request was issued</p></td></tr><tr><td class="CDLEntry">%V</td><td class="CDLDefinition"><p>Log level</p></td></tr></table><div class="CHeading">Quantify Placeholders</div><p>All placeholders can be extended with formatting instructions, just similar to <a href="https://lexikos.github.io/v2/docs/commands/Format.htm" target="_top">format</a>:</p><table class="CDefinitionList"><tr><td class="CDLEntry">%20M</td><td class="CDLDefinition"><p>Reserve 20 chars for the method, right-justify and fill with blanks if it is shorter</p></td></tr><tr><td class="CDLEntry">%-20M</td><td class="CDLDefinition"><p>Same as %20c, but left-justify and fill the right side with blanks</p></td></tr><tr><td class="CDLEntry">%09r</td><td class="CDLDefinition"><p>Zero-pad the number of milliseconds to 9 digits</p></td></tr><tr><td class="CDLEntry">%.8M</td><td class="CDLDefinition"><p>Specify the maximum field with and have the formatter cut off the rest of the value</p></td></tr></table></div>
 </div>
 
 <a name="Private_Methods"></a><a name="Topic14"></a><div class="CTopic TGroup LAutoHotKey">
@@ -18,13 +18,15 @@
 </div>
 
 <a name="_expand"></a><a name="Topic15"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">_expand(ph)</div>
+ <div class="CTitle">_expand</div>
+ <div id="NDPrototype15" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">_expand(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">ph</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Expands the placeholders with the values from the given array</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">ph</td><td class="CDLDefinition"><p>associative Array containing mapping placeholder to its replacement</p></td></tr></table></div>
 </div>
 
 <a name="_split"></a><a name="Topic16"></a><div class="CTopic TFunction LAutoHotKey">
- <div class="CTitle">_split()</div>
- <div class="CBody"><p>Splits the layout into its tokens</p></div>
+ <div class="CTitle">_split</div>
+ <div id="NDPrototype16" class="NDPrototype NoParameterForm">_split()</div>
+ <div class="CBody"><p>Splits the layout into its tokens</p><div class="CHeading">Internals</div><p>The layout string is separated into its separate layout elements (tokens). For example &quot;%8V %M&quot; consists of two tokens: &quot;%8V&quot; and &quot;%M&quot;. Each token starts with &quot;%&quot; and ends at the next space.</p><p>The tokens are split up into its separate parts: each token consists of three parts:</p><table class="CDefinitionList"><tr><td class="CDLEntry">Quantifier</td><td class="CDLDefinition"><p>All placeholders can be extended with formatting instructions, just similar to <a href="https://lexikos.github.io/v2/docs/commands/Format.htm" target="_top">format</a></p></td></tr><tr><td class="CDLEntry">Placeholder</td><td class="CDLDefinition"><p>Placeholders are replaced with the corresponding information</p></td></tr><tr><td class="CDLEntry">Curlies</td><td class="CDLDefinition"><p>Curlies allow further manipulation of the placeholders</p></td></tr></table><p>As a result of the function, the property <a href="../../../index.html#AutoHotKeyClass:log4ahk.layout:tokens" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,19);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >tokens</a> is filled with objects, which contain the complete token as well as its single parts.</p><p>For more information, which values are allowed for quantifiers, placeholders and curlies have a look at documentation of class <a href="../../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >layout</a></p></div>
 </div>
 
 <a name="Properties"></a><a name="Topic17"></a><div class="CTopic TGroup LAutoHotKey">
@@ -33,12 +35,12 @@
 
 <a name="required"></a><a name="Topic18"></a><div class="CTopic TProperty LAutoHotKey">
  <div class="CTitle">required [get/set]</div>
- <div class="CBody"><p>Get/set the required layout</p></div>
+ <div class="CBody"><p>Get/set the required layout. This layout will be used to format the logged message.</p></div>
 </div>
 
 <a name="tokens"></a><a name="Topic19"></a><div class="CTopic TProperty LAutoHotKey last">
  <div class="CTitle">tokens [get]</div>
- <div class="CBody"><p>Get the tokens of the current layout</p><div class="CHeading">Internals</div><p>The layout string is separated into its separate layout elements (tokens). For example &quot;%8V %M&quot; consists of two tokens: &quot;%8V&quot; and &quot;%M&quot;. Each token starts with &quot;%&quot; and ends at the next space.&nbsp; The tokens are split up into its separate parts.</p></div>
+ <div class="CBody"><p>Get the tokens of the current layout</p><p>For more information see <a href="../../../index.html#AutoHotKeyClass:log4ahk.layout:_split" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,16);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >_split</a></p></div>
 </div>
 
 </body></html>
