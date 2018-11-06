@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("_li",["Function"],[["_limit",,[["log4ahk.loglevel",,,,0,"File:log4ahk.ahk:log4ahk.loglevel._limit","AutoHotKeyClass:log4ahk.loglevel:_limit"]]]]);

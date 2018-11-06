@@ -24,7 +24,7 @@
 
 <a name="_split"></a><a name="Topic16"></a><div class="CTopic TFunction LAutoHotKey">
  <div class="CTitle">_split()</div>
- <div class="CBody"><p>Splits the layout into its tokens</p></div>
+ <div class="CBody"><p>Splits the layout into its tokens</p><div class="CHeading">Internals</div><p>The layout string is separated into its separate layout elements (tokens). For example &quot;%8V %M&quot; consists of two tokens: &quot;%8V&quot; and &quot;%M&quot;. Each token starts with &quot;%&quot; and ends at the next space.</p><p>The tokens are split up into its separate parts: each token consists of three parts: Placeholder Quantifier - All placeholders can be extended with formatting instructions, just similar to <a href="https://lexikos.github.io/v2/docs/commands/Format.htm" target="_top">format</a> Placeholder - Placeholders are replaced with the corresponding information Curlies - Curlies allow further manipulation of the placeholders</p><p>As a result of the function, the private array &lt;_tokens&gt; is filled with objects, which contain the complete token as well as its single parts.</p><p>For more information, which values are allowede for quantifiers, placeholders and curlies have a look at documentation of class <a href="../../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >layout</a></p></div>
 </div>
 
 <a name="Properties"></a><a name="Topic17"></a><div class="CTopic TGroup LAutoHotKey">
@@ -33,12 +33,12 @@
 
 <a name="required"></a><a name="Topic18"></a><div class="CTopic TProperty LAutoHotKey">
  <div class="CTitle">required [get/set]</div>
- <div class="CBody"><p>Get/set the required layout</p></div>
+ <div class="CBody"><p>Get/set the required layout. This layout will be used to format the logged message.</p></div>
 </div>
 
 <a name="tokens"></a><a name="Topic19"></a><div class="CTopic TProperty LAutoHotKey last">
  <div class="CTitle">tokens [get]</div>
- <div class="CBody"><p>Get the tokens of the current layout</p><div class="CHeading">Internals</div><p>The layout string is separated into its separate layout elements (tokens). For example &quot;%8V %M&quot; consists of two tokens: &quot;%8V&quot; and &quot;%M&quot;. Each token starts with &quot;%&quot; and ends at the next space.&nbsp; The tokens are split up into its separate parts.</p></div>
+ <div class="CBody"><p>Get the tokens of the current layout</p><p>For more information see <a href="../../../index.html#AutoHotKeyClass:log4ahk.layout:_split" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,16);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >_split</a></p></div>
 </div>
 
 </body></html>

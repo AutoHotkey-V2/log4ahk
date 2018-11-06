@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("tr",["Function"],[["tr",,[["log4ahk.loglevel",,,,0,"File:log4ahk.ahk:log4ahk.loglevel.tr","AutoHotKeyClass:log4ahk.loglevel:tr"]]]]);

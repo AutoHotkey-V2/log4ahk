@@ -45,18 +45,19 @@ A class that provides simple logging facilities for AutoHotkey
 
 This log-Class supports 
 
-  - <Loglevels>
-  - Layout of the prepended string
+  - <Loglevel> allows to define to a hierarchy of log messages and controls which messages are logged
+  - <Layout> of the logged message
 
 Loglevels: 
 
-Each message has to be logged on a certain loglevel. Consider the loglevel as the severity of the message 
+Each message has to be logged on a certain <loglevel>. Consider the loglevel as the severity of the message 
 you want to log: some logmessages are used for simple debug purposes, whereas other logmessages may 
-indicate an Error.
+indicate an Error. In some situations you want to have a very detailled logging - in other situations you just 
+want to be notified about errors ... Both can be managed via <loglevel>. 
 
-  - Different hiearchical loglevels are Supported
-  - The hierachy is *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
+Layout:
 
+Layouts allow to determine the format of the messages to be logged (see <layout>)
 */
 	_version := "0.3.1"
 	shouldLog := 1
@@ -315,6 +316,20 @@ indicate an Error.
 		/*
 		Method: _split()
 		Splits the layout into its tokens
+
+		Internals:
+		The layout string is separated into its separate layout elements (tokens). For example "%8V %M" 
+		consists of two tokens: "%8V" and "%M". Each token starts with "%" and ends at the next space. 
+
+		The tokens are split up into its separate parts: each token consists of three parts:
+		Placeholder Quantifier - All placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>
+		Placeholder - Placeholders are replaced with the corresponding information
+		Curlies - Curlies allow further manipulation of the placeholders
+
+		As a result of the function, the private array <_tokens> is filled with objects, which contain the complete token as well as its single parts.
+
+		For more information, which values are allowede for quantifiers, placeholders and curlies have a look at documentation
+		of class <layout>
 		*/
 			FoundPos := 1
     		len := 0
@@ -344,7 +359,7 @@ indicate an Error.
 		required[] {
 		/*
   		Property: required [get/set] 
-		Get/set the required layout
+		Get/set the required layout. This layout will be used to format the logged message.
   		*/
 			get {
 				return  this._required
@@ -360,11 +375,8 @@ indicate an Error.
   		Property: tokens [get] 
 		Get the tokens of the current layout
 		
-		Internals:
-		The layout string is separated into its separate layout elements (tokens). For example "%8V %M" 
-		consists of two tokens: "%8V" and "%M". Each token starts with "%" and ends at the next space. 
-		The tokens are split up into its separate parts.
-  		*/
+		For more information see <_split>
+		*/
 			get {
 				this._split()
 				return  this._tokens
@@ -376,6 +388,26 @@ indicate an Error.
 	/* 
 	Class: log4ahk.loglevel
 	Helper class for <log4ahk> (Implementing loglevels)
+
+	Loglevels support the following needs
+
+		- hierarchize your log messages due to importance of the log message (from TRACE to FATAL)
+		- control which level of log messages are currently to be logged
+
+	Internals:
+		- Different hierarchical loglevels are supported
+  		- The hierachy levels are *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
+		- to log on a certain loglevel, separate methods are available (<trace>, <debug>, <info>, <warn>, <error>, <fatal>)
+		- To filter message to due current used loglevel use following syntax, set the property logger.loglevel.required to the requested level
+
+	Example:
+	=== Autohotkey -----------
+	logger := new log4ahk()
+	; Choose the desired loglevel
+	logger.loglevel.required := logger.loglevel.INFO
+	logger.trace("TraceTest") ; This Message should not be logged due to choosen loglevel
+	logger.info("InfoTest") ; This Message should be logged!
+	===
 	*/
 	class loglevel {
 		STATIC TRACE := 1
@@ -385,8 +417,20 @@ indicate an Error.
 		STATIC ERROR := 5
 		STATIC FATAL := 6
 
+		; --------------------------------------------------------------------------------------
+		; Group: Private Methods		
 		tr(lvl){
-			; Translate the numeric loglevel into a string
+		/*
+		Method: tr()
+		Translate the numeric loglevel into a string
+	
+		Parameters:
+	
+		lvl - Numerical loglevel
+		
+		Returns:
+		String describing the choosen loglevel (to be used within <layout>)
+		*/
 			translation := ["TRACE","DEBUG","INFO","WARN","ERROR","FATAL"]
 			if ((lvl >= this.TRACE) & (lvl <= this.FATAL)) {
 				return translation[lvl]
@@ -406,6 +450,17 @@ indicate an Error.
 		}
 
 		_limit(lvl) {
+		/*
+		Method: _limit()
+		Validate the loglevel
+	
+		Parameters:
+	
+		lvl - loglevel to be checked
+		
+		Returns:
+		corrected loglevel
+		*/
 			if (lvl < this.TRACE) {
 				return this.TRACE
 			}
