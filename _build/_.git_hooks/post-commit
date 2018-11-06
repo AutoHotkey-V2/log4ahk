@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+echo
+if [ -a .commit ]
+    then
+    rm .commit
+	pushd _build
+	./mkDoc.bat
+	popd
+    git add docs
+    git commit --amend -C HEAD --no-verify
+fi
+exit
