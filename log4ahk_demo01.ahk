@@ -26,7 +26,7 @@ f1() {
 	logger.loglevel.required := logger.loglevel.INFO
 	logger.debug("Test DEBUG - Lvl INFO") ; shouldn't be logged due to required loglevel
 	logger.info("Test INFO - Lvl INFO")
-	logger.layout.required := "%d - %r - %R [%P] [%-5.5V] {%-15.15M}{%H} %m"
+	logger.layout.required := "%d - %r - %R [%P] [%-5.5V - %s] {%-15.15M}{%H} %m"
 	logger.info("INFO - Test INFO - Lvl INFO - after change of layout")
 }
 

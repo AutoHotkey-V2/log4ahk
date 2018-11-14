@@ -262,6 +262,9 @@ f1() {
 			else if (a["Placeholder"] == "R") {
 				value := (CounterCurr - this._CounterPrev) / this._CounterFreq * 1000
 			}
+			else if (a["Placeholder"] == "s") {
+				value := A_Scriptname
+			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
 			}
@@ -410,7 +413,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRsV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
