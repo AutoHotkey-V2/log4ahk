@@ -249,7 +249,6 @@ f1() {
 			}
 			else if (a["Placeholder"] == "P") {
 				value := DllCall("GetCurrentProcessId")
-				OutputDebug "P=" value
 			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)

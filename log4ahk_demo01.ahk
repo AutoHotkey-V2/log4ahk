@@ -11,6 +11,7 @@ logger := new log4ahk()
 logger.loglevel.required := logger.loglevel.TRACE
 ; Show loglevel, current function, computername and log message in log protocol
 logger.layout.required := "[%P] [%-5.5V] {%-15.15M}{%H} %m"
+logger.info("Running log4ahk - Version " logger._version)
 logger.trace("TRACE - Test TRACE") 
 logger.debug("TRACE - Test DEBUG")
 logger.info("TRACE - Test INFO")
