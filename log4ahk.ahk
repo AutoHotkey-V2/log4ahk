@@ -96,7 +96,7 @@ f1() {
 ;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.3.1"
+	_version := "0.3.2"
 	shouldLog := 1
 	
 	mode := 0 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
@@ -247,6 +247,9 @@ f1() {
 				cs:= CallStack(deepness := thiscalldepth+1)
 				value := cs[-thiscalldepth].function
 			}
+			else if (a["Placeholder"] == "P") {
+				value := DllCall("GetCurrentProcessId")
+			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
 			}
@@ -311,6 +314,7 @@ f1() {
 	%H - Hostname
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
+	%P - pid of the current process
 	%V - Log level
 
 	Quantify Placeholders:
@@ -384,7 +388,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([HmMV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([HmMPV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
