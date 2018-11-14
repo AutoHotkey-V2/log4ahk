@@ -82,7 +82,7 @@ return
 ;########################################################
 f1() {
 	logger := new log4ahk()
-	Change the loglevel to be filtered upon
+	;Change the loglevel to be filtered upon
 	logger.loglevel.required := logger.loglevel.INFO
 	logger.trace("INFO - Test TRACE") ; shouldn't be logged due to required loglevel
 	logger.debug("INFO - Test DEBUG") ; shouldn't be logged due to required loglevel
@@ -96,10 +96,10 @@ f1() {
 ;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.3.2"
+	_version := "0.3.3"
 	shouldLog := 1
 	
-	mode := 0 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
+	mode := 1 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
 	static _indentLvl := 0
 	shouldIndent := 1
 
@@ -234,10 +234,16 @@ f1() {
 		ph := []
 		thiscalldepth := 3
 
+		; Get the current Performance counter here, to be able to activate Placeholder %r and %R anytime ...
+		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
+
 		Loop tokens.Length() {
 			a := tokens[A_Index]
 			value := ""
-			if (a["Placeholder"] == "H") {
+			if (a["Placeholder"] == "d") {
+				value := FormatTime(, "yyyy/MM/dd hh:mm:ss")
+			}
+			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
 			}
 			else if (a["Placeholder"] == "m") {
@@ -250,6 +256,18 @@ f1() {
 			else if (a["Placeholder"] == "P") {
 				value := DllCall("GetCurrentProcessId")
 			}
+			else if (a["Placeholder"] == "r") {
+				value := (CounterCurr - this._CounterStart) / this._CounterFreq * 1000
+			}
+			else if (a["Placeholder"] == "R") {
+				value := (CounterCurr - this._CounterPrev) / this._CounterFreq * 1000
+			}
+			else if (a["Placeholder"] == "s") {
+				value := A_Scriptname
+			}
+			else if (a["Placeholder"] == "S") {
+				value := A_ScriptFullPath
+			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
 			}
@@ -257,6 +275,7 @@ f1() {
 			ph[a["Placeholder_decorated"]]  := value
 		}
 
+		this._CounterPrev := CounterCurr
 		StringCaseSense currStringCaseSense
 		return ph
 	}
@@ -295,6 +314,12 @@ f1() {
 
 		this._loglevel := new this.loglevel()
 		this._layout := new this.layout()
+
+		DllCall("QueryPerformanceCounter", "Int64*", CounterStart)
+		this._CounterStart := CounterStart
+		this._CounterPrev := CounterStart
+		DllCall("QueryPerformanceFrequency", "Int64*", freq)
+		this._CounterFreq := freq
 	}
 
 	; ##################### Start of Properties ##############################################
@@ -311,10 +336,15 @@ f1() {
 
 	The following placeholders can be used within the layout string:
 
+	%d - Current date in yyyy/MM/dd hh:mm:ss format
 	%H - Hostname
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%P - pid of the current process
+	%r - Number of milliseconds elapsed from logging start to current logging event
+	%R - Number of milliseconds elapsed from last logging event to current logging event 
+	%s - Name of the current script
+	%S - Fullpath of the current script
 	%V - Log level
 
 	Quantify Placeholders:
@@ -388,7 +418,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([HmMPV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
