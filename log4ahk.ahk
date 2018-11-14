@@ -82,7 +82,7 @@ return
 ;########################################################
 f1() {
 	logger := new log4ahk()
-	Change the loglevel to be filtered upon
+	;Change the loglevel to be filtered upon
 	logger.loglevel.required := logger.loglevel.INFO
 	logger.trace("INFO - Test TRACE") ; shouldn't be logged due to required loglevel
 	logger.debug("INFO - Test DEBUG") ; shouldn't be logged due to required loglevel
@@ -237,7 +237,10 @@ f1() {
 		Loop tokens.Length() {
 			a := tokens[A_Index]
 			value := ""
-			if (a["Placeholder"] == "H") {
+			if (a["Placeholder"] == "d") {
+				value := FormatTime(, "yyyy/MM/dd hh:mm:ss")
+			}
+			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
 			}
 			else if (a["Placeholder"] == "m") {
@@ -311,6 +314,7 @@ f1() {
 
 	The following placeholders can be used within the layout string:
 
+	%d - Current date in yyyy/MM/dd hh:mm:ss format
 	%H - Hostname
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
@@ -388,7 +392,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([HmMPV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
