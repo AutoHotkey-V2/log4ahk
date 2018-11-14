@@ -96,10 +96,10 @@ f1() {
 ;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.3.2"
+	_version := "0.3.3"
 	shouldLog := 1
 	
-	mode := 0 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
+	mode := 1 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
 	static _indentLvl := 0
 	shouldIndent := 1
 
@@ -259,6 +259,9 @@ f1() {
 			else if (a["Placeholder"] == "r") {
 				value := (CounterCurr - this._CounterStart) / this._CounterFreq * 1000
 			}
+			else if (a["Placeholder"] == "R") {
+				value := (CounterCurr - this._CounterPrev) / this._CounterFreq * 1000
+			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
 			}
@@ -266,6 +269,7 @@ f1() {
 			ph[a["Placeholder_decorated"]]  := value
 		}
 
+		this._CounterPrev := CounterCurr
 		StringCaseSense currStringCaseSense
 		return ph
 	}
@@ -307,6 +311,7 @@ f1() {
 
 		DllCall("QueryPerformanceCounter", "Int64*", CounterStart)
 		this._CounterStart := CounterStart
+		this._CounterPrev := CounterStart
 		DllCall("QueryPerformanceFrequency", "Int64*", freq)
 		this._CounterFreq := freq
 	}
@@ -330,7 +335,8 @@ f1() {
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%P - pid of the current process
-	%r - Number of milliseconds elapsed from logging start to logging event
+	%r - Number of milliseconds elapsed from logging start to current logging event
+	%R - Number of milliseconds elapsed from last logging event to current logging event 
 	%V - Log level
 
 	Quantify Placeholders:
@@ -404,7 +410,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
