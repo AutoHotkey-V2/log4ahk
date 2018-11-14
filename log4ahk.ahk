@@ -234,6 +234,9 @@ f1() {
 		ph := []
 		thiscalldepth := 3
 
+		; Get the current Performance counter here, to be able to activate Placeholder %r and %R anytime ...
+		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
+
 		Loop tokens.Length() {
 			a := tokens[A_Index]
 			value := ""
@@ -252,6 +255,9 @@ f1() {
 			}
 			else if (a["Placeholder"] == "P") {
 				value := DllCall("GetCurrentProcessId")
+			}
+			else if (a["Placeholder"] == "r") {
+				value := (CounterCurr - this._CounterStart) / this._CounterFreq * 1000
 			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
@@ -298,6 +304,11 @@ f1() {
 
 		this._loglevel := new this.loglevel()
 		this._layout := new this.layout()
+
+		DllCall("QueryPerformanceCounter", "Int64*", CounterStart)
+		this._CounterStart := CounterStart
+		DllCall("QueryPerformanceFrequency", "Int64*", freq)
+		this._CounterFreq := freq
 	}
 
 	; ##################### Start of Properties ##############################################
@@ -319,6 +330,7 @@ f1() {
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%P - pid of the current process
+	%r - Number of milliseconds elapsed from logging start to logging event
 	%V - Log level
 
 	Quantify Placeholders:
@@ -392,7 +404,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
