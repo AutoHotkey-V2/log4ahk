@@ -265,6 +265,9 @@ f1() {
 			else if (a["Placeholder"] == "s") {
 				value := A_Scriptname
 			}
+			else if (a["Placeholder"] == "S") {
+				value := A_ScriptFullPath
+			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
 			}
@@ -340,6 +343,8 @@ f1() {
 	%P - pid of the current process
 	%r - Number of milliseconds elapsed from logging start to current logging event
 	%R - Number of milliseconds elapsed from last logging event to current logging event 
+	%s - Name of the current script
+	%S - Fullpath of the current script
 	%V - Log level
 
 	Quantify Placeholders:
@@ -413,7 +418,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRsV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
