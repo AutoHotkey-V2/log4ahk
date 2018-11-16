@@ -15,6 +15,8 @@ Include `log4ahk.ahk` from the `lib` folder into your project using standard Aut
 
 ; Initialize the logger
 logger := new log4ahk()
+; Set the appenders to be logged to: STDOUT
+logger.appenders.push(new logger.appenderstdout())
 ; Set the layout for the messages
 logger.layout.required := "[%V] #%M# %m"
 ; Choose the desired loglevel
@@ -26,8 +28,3 @@ logger.info("InfoTest") ; This Message should be logged!
 For usage examples have a look at the files *log4ahk_demoXX.ahk*.
 
 For more detailed documentation have a look into the source file *log4ahk.ahk* or online [html-documentation](https://autohotkey-v2.github.io/log4ahk/)
-
-## Limitations
-
- * Documentation is incomplete
- * Only logging via *OutputDebug* is currently available. To see the current logging output you have to run "dbgview.exe" (or another program, which is able to capture OutputDebug-output like [DebugView++](https://github.com/CobaltFusion/DebugViewPP)).
