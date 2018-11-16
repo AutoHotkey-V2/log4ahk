@@ -9,6 +9,9 @@
 logger := new log4ahk()
 ; Set the loglevel to be filtered upon
 logger.loglevel.required := logger.loglevel.TRACE
+; Set the appenders to be logged to
+logger.appenders.push(new logger.appenderoutputdebug())
+logger.appenders.push(new logger.appenderstdout())
 ; Show loglevel, current function, computername and log message in log protocol
 logger.layout.required := "[%-5.5V] {%-15.15M}{%H} %m"
 logger.info("Running log4ahk - Version " logger._version)
@@ -24,7 +27,7 @@ f1() {
 	logger := new log4ahk()
 	; Change the loglevel to be filtered upon
 	logger.loglevel.required := logger.loglevel.INFO
-	logger.debug("Test DEBUG - Lvl INFO") ; shouldn't be logged due to required loglevel
+	logger.debug("Test DEBUG - Lvl INFO") ; isn't be logged due the current loglevel has lesser prioriity than required loglevel
 	logger.info("Test INFO - Lvl INFO")
 	logger.layout.required := "%d - %r - %R [%P] [%-5.5V] {%s - %-15.15M}{%H} %m"
 	logger.info("INFO - Test INFO - Lvl INFO - after change of layout")

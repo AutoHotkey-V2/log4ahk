@@ -1,0 +1,1 @@
+NDFramePage.OnPageTitleLoaded("AutoHotKeyClass:log4ahk.appenderoutputdebug","appenderoutputdebug");NDSummary.OnSummaryLoaded("AutoHotKeyClass:log4ahk.appenderoutputdebug",[["AutoHotKey","AutoHotKey"]],[["Classes","Class"]],[[13,0,0,"<span class=\"Qualifier\">log4ahk.</span>&#8203;appenderoutputdebug"]]);
