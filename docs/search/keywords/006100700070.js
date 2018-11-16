@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("app",["Class"],[["appenderoutputdebug",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk.appenderoutputdebug","AutoHotKeyClass:log4ahk.appenderoutputdebug"]]],["appenderstdout",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk.appenderstdout","AutoHotKeyClass:log4ahk.appenderstdout"]]]]);

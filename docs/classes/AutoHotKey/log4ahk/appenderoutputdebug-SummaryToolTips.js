@@ -1,0 +1,1 @@
+NDSummary.OnToolTipsLoaded("AutoHotKeyClass:log4ahk.appenderoutputdebug",{13:"<div class=\"NDToolTip TClass LAutoHotKey\"><div class=\"TTSummary\">Helper class for log4ahk (Implementing appender via outputdebug)</div></div>"});

@@ -8,39 +8,39 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic20"></a><div class="CTopic TClass LAutoHotKey first">
+<a name="Topic22"></a><div class="CTopic TClass LAutoHotKey first">
  <div class="CTitle"><span class="Qualifier">log4ahk.</span>&#8203;loglevel</div>
  <div class="CBody"><p>Helper class for <a href="../../../index.html#AutoHotKeyClass:log4ahk" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,2);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >log4ahk</a> (Implementing loglevels)</p><p>Loglevels support the following needs</p><ul><li><p>hierarchize your log messages due to importance of the log message (from TRACE to FATAL)</p></li><li><p>control which level of log messages are currently to be logged</p></li></ul><div class="CHeading">Internals</div><ul><li><p>Different hierarchical loglevels are supported</p></li><li><p>The hierachy levels are <b>trace</b> (1) &lt;- <b>debug</b> (2) &lt;- <b>info</b> (3) &lt;- <b>warn</b> (4) &lt;- <b>error</b> (5) &lt;- <b>fatal</b> (6)</p></li><li><p>to log on a certain loglevel, separate methods are available (<a href="../../../index.html#AutoHotKeyClass:log4ahk:trace" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,4);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >trace</a>, <a href="../../../index.html#AutoHotKeyClass:log4ahk:debug" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,5);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >debug</a>, <a href="../../../index.html#AutoHotKeyClass:log4ahk:info" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,6);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >info</a>, <a href="../../../index.html#AutoHotKeyClass:log4ahk:warn" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,7);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >warn</a>, <a href="../../../index.html#AutoHotKeyClass:log4ahk:error" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,8);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >error</a>, <a href="../../../index.html#AutoHotKeyClass:log4ahk:fatal" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,9);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >fatal</a>)</p></li><li><p>To filter message to due current used loglevel use following syntax, set the property logger.loglevel.required to the requested level</p></li></ul></div>
 </div>
 
-<a name="Private_Methods"></a><a name="Topic21"></a><div class="CTopic TGroup LAutoHotKey">
+<a name="Private_Methods"></a><a name="Topic23"></a><div class="CTopic TGroup LAutoHotKey">
  <div class="CTitle">Private Methods</div>
 </div>
 
-<a name="tr"></a><a name="Topic22"></a><div class="CTopic TFunction LAutoHotKey">
+<a name="tr"></a><a name="Topic24"></a><div class="CTopic TFunction LAutoHotKey">
  <div class="CTitle">tr</div>
- <div id="NDPrototype22" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">tr(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">lvl</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
- <div class="CBody"><p>Translate the numeric loglevel into a string</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">lvl</td><td class="CDLDefinition"><p>Numerical loglevel</p></td></tr></table><div class="CHeading">Returns</div><p>String describing the choosen loglevel (to be used within <a href="../../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >layout</a>)</p></div>
+ <div id="NDPrototype24" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">tr(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">lvl</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div class="CBody"><p>Translate the numeric loglevel into a string</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">lvl</td><td class="CDLDefinition"><p>Numerical loglevel</p></td></tr></table><div class="CHeading">Returns</div><p>String describing the choosen loglevel (to be used within <a href="../../../index.html#AutoHotKeyClass:log4ahk.layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,15);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >layout</a>)</p></div>
 </div>
 
-<a name="_limit"></a><a name="Topic23"></a><div class="CTopic TFunction LAutoHotKey">
+<a name="_limit"></a><a name="Topic25"></a><div class="CTopic TFunction LAutoHotKey">
  <div class="CTitle">_limit</div>
- <div id="NDPrototype23" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">_limit(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">lvl</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
+ <div id="NDPrototype25" class="NDPrototype WideForm CStyle"><table><tr><td class="PBeforeParameters">_limit(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PName first last">lvl</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div>
  <div class="CBody"><p>Validate the loglevel</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">lvl</td><td class="CDLDefinition"><p>loglevel to be checked</p></td></tr></table><div class="CHeading">Returns</div><p>corrected loglevel</p></div>
 </div>
 
-<a name="Properties"></a><a name="Topic24"></a><div class="CTopic TGroup LAutoHotKey">
+<a name="Properties"></a><a name="Topic26"></a><div class="CTopic TGroup LAutoHotKey">
  <div class="CTitle">Properties</div>
 </div>
 
-<a name="current"></a><a name="Topic25"></a><div class="CTopic TProperty LAutoHotKey">
+<a name="current"></a><a name="Topic27"></a><div class="CTopic TProperty LAutoHotKey">
  <div class="CTitle">current [get/set]</div>
  <div class="CBody"><p>get/set the current loglevel</p></div>
 </div>
 
-<a name="required"></a><a name="Topic26"></a><div class="CTopic TProperty LAutoHotKey last">
+<a name="required"></a><a name="Topic28"></a><div class="CTopic TProperty LAutoHotKey last">
  <div class="CTitle">required [get/set]</div>
- <div class="CBody"><p>get/set the required loglevel</p><p>If a message is reuested to be logged, the <a href="../../../index.html#AutoHotKeyClass:log4ahk.loglevel:current" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,25);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >current</a> loglevel is compared against required loglevel.&nbsp; If the current loglevel is greater/equal the required loglevel the message is logged - otherwise it is suppressed</p></div>
+ <div class="CBody"><p>get/set the required loglevel</p><p>If a message is reuested to be logged, the <a href="../../../index.html#AutoHotKeyClass:log4ahk.loglevel:current" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,27);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >current</a> loglevel is compared against required loglevel.&nbsp; If the current loglevel is greater/equal the required loglevel the message is logged - otherwise it is suppressed</p></div>
 </div>
 
 </body></html>

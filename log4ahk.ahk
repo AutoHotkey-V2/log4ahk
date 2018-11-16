@@ -68,6 +68,8 @@ Example:
 #include log4ahk.ahk
 
 logger := new log4ahk()
+; Enable logging to STDOUT
+logger.appenders.push(new logger.appender.stdout())
 ; Set the loglevel to be filtered upon
 logger.loglevel.required := logger.loglevel.TRACE
 ; Show loglevel, current function, computername and log message in log protocol
@@ -96,12 +98,13 @@ f1() {
 ;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.3.3"
+	_version := "0.4.0"
 	shouldLog := 1
 	
-	mode := 1 ; 0 = OutputDebug, 1 = StdOut, anythingElse = MsgBox
 	static _indentLvl := 0
 	shouldIndent := 1
+
+	appenders := []
 
 	
 	; ##########################################################################
@@ -206,14 +209,9 @@ f1() {
 		if (this._loglevel.required <= this._logLevel.current  ) {
 			placeholders := this._fillLayoutPlaceholders(str) ; Expand the layout placeholders with current values
 			layoutexpanded := this._layout._expand(placeholders) ; Generate the layout string
-			if (this.mode = 0) {
-				OutputDebug(layoutexpanded)
-			}
-			else if (this.mode = 1) {
-				FileAppend layoutexpanded "`n", "*"
-			}
-			else {
-				MsgBox(layoutexpanded)
+			
+			Loop this.appenders.Length() {
+				this.appenders[A_Index].log(layoutexpanded)
 			}
 		}
 		return
@@ -314,6 +312,7 @@ f1() {
 
 		this._loglevel := new this.loglevel()
 		this._layout := new this.layout()
+		this.appenders := []
 
 		DllCall("QueryPerformanceCounter", "Int64*", CounterStart)
 		this._CounterStart := CounterStart
@@ -323,10 +322,41 @@ f1() {
 	}
 
 	; ##################### Start of Properties ##############################################
+	
+	/* ########################################################################## 
+	Class: log4ahk.appenderoutputdebug
+	Helper class for <log4ahk> (Implementing appender via outputdebug)
 
-	; ##########################################################################
-	class layout {
-	/* 
+	Logs messages via OutputDebug	
+
+	Usage:
+	=== Autohotkey
+	logger.appenders.push(new logger.appenderoutputdebug())
+	===
+	*/
+	class appenderoutputdebug {
+		log(msg) {
+			outputdebug(msg)
+		}
+	}
+	/* ########################################################################## 
+	Class: log4ahk.appenderstdout
+	Helper class for <log4ahk> (Implementing appender via stdout)
+
+	Logs messages via StdOut	
+
+	Usage:
+	=== Autohotkey
+	logger.appenders.push(new logger.appenderstdout())
+	===
+	*/
+	class appenderstdout {
+		log(msg) {
+			FileAppend msg "`n", "*"
+		}
+	}
+	
+	/* ########################################################################## 
 	Class: log4ahk.layout
 	Helper class for <log4ahk> (Implementing layout)
 
@@ -355,7 +385,15 @@ f1() {
 	%-20M - Same as %20c, but left-justify and fill the right side with blanks
     %09r - Zero-pad the number of milliseconds to 9 digits
     %.8M - Specify the maximum field with and have the formatter cut off the rest of the value
+
+	Usage:
+	 
+	To set a layout use
+	=== Autohotkey
+	logger.layout.required := "[%-5.5V] {%-15.15M}{%H} %m"
+	===
 	*/
+	class layout {
 	
 		_tokens := []
 
@@ -466,8 +504,7 @@ f1() {
   		}
 	}
 
-	; ##########################################################################
-	/* 
+	/* ########################################################################## 
 	Class: log4ahk.loglevel
 	Helper class for <log4ahk> (Implementing loglevels)
 
