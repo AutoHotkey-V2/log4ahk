@@ -27,14 +27,16 @@ f1() {
 	logger := new log4ahk()
 	; Change the loglevel to be filtered upon
 	logger.loglevel.required := logger.loglevel.INFO
-	logger.debug("Test DEBUG - Lvl INFO") ; isn't be logged due the current loglevel has lesser prioriity than required loglevel
+	logger.debug("Test DEBUG - Lvl INFO") ; won't be logged as the current loglevel has lesser priority than required loglevel
 	logger.info("Test INFO - Lvl INFO")
 	logger.layout.required := "%d - %r - %R [%P] [%-5.5V] {%s - %-15.15M}{%H} %m"
 	logger.info("INFO - Test INFO - Lvl INFO - after change of layout")
 }
 
 ; Output: 
-;[TRACE] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test TRACE
-;[DEBUG] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test DEBUG
-;[INFO ] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test INFO
-;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
+[INFO ] {[AUTO-EXECUTE] }{NB00121} Running log4ahk - Version 0.4.0
+[TRACE] {[AUTO-EXECUTE] }{NB00121} Test TRACE - Lvl TRACE
+[DEBUG] {[AUTO-EXECUTE] }{NB00121} Test DEBUG - Lvl TRACE
+[INFO ] {[AUTO-EXECUTE] }{NB00121} Test INFO - Lvl TRACE
+[INFO ] {f1             }{NB00121} Test INFO - Lvl INFO
+2018/11/19 07:27:55 - 8.60363052823162633 - 1.63673621445787609 [4332] [INFO ] {log4ahk_demo01.ahk - f1             }{COMPI} INFO - Test INFO - Lvl INFO - after change of layout
