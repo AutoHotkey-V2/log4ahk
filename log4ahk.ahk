@@ -244,6 +244,8 @@ f1() {
 
 		; Get the current Performance counter here, to be able to activate Placeholder %r and %R anytime ...
 		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
+		; Pre-Get the callstack
+		cs:= CallStack(deepness := thiscalldepth+1)
 
 		Loop tokens.Length() {
 			a := tokens[A_Index]
@@ -254,15 +256,16 @@ f1() {
 			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
 			}
-			else if (a["Placeholder"] =="L") {
-				cs:= CallStack(deepness := thiscalldepth+1)
+			else if (a["Placeholder"] =="l") {	
+				value :=  cs[-thiscalldepth].function " in " cs[-thiscalldepth].file " (" value := cs[-thiscalldepth].line ")"
+			}
+			else if (a["Placeholder"] =="L") {	
 				value := cs[-thiscalldepth].line
 			}
 			else if (a["Placeholder"] == "m") {
 				value := str
 			}
 			else if (a["Placeholder"] =="M") {
-				cs:= CallStack(deepness := thiscalldepth+1)
 				value := cs[-thiscalldepth].function
 			}
 			else if (a["Placeholder"] == "P") {
@@ -470,7 +473,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
