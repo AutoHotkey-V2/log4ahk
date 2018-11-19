@@ -253,6 +253,9 @@ f1() {
 			if (a["Placeholder"] == "d") {
 				value := FormatTime(, "yyyy/MM/dd hh:mm:ss")
 			}
+			else if (a["Placeholder"] =="F") {	
+				value :=  cs[-thiscalldepth].file
+			}
 			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
 			}
@@ -384,7 +387,10 @@ f1() {
 	The following placeholders can be used within the layout string:
 
 	%d - Current date in yyyy/MM/dd hh:mm:ss format
+	%F - File where the logging event occurred
 	%H - Hostname
+	%l - Fully qualified name of the calling method followed by the callers source the file name and line number between parentheses.
+	%L - Line number within the file where the log statement was issued
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%P - pid of the current process
@@ -473,7 +479,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dFHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
