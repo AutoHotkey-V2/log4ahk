@@ -254,6 +254,10 @@ f1() {
 			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
 			}
+			else if (a["Placeholder"] =="L") {
+				cs:= CallStack(deepness := thiscalldepth+1)
+				value := cs[-thiscalldepth].line
+			}
 			else if (a["Placeholder"] == "m") {
 				value := str
 			}
@@ -466,7 +470,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
