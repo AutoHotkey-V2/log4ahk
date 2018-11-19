@@ -47,6 +47,7 @@ This log-Class supports
 
   - <Loglevel> allows to define to a hierarchy of log messages and controls which messages are logged
   - <Layout> of the logged message
+  - Appenders to the the channels to be logged to
 
 Loglevels: 
 
@@ -58,6 +59,15 @@ want to be notified about errors ... Both can be managed via <loglevel>.
 Layout:
 
 Layouts allow to determine the format of the messages to be logged (see <layout>)
+
+Appenders:
+
+Appenders define the "channels" to be logged to. Currently following appenders can be used:
+
+ - <appenderstdout> - log your messages via stdout. Using Scite4AutoHotkey or VSCode, this will be logging to console
+ - <appenderoutputdebug> - log your messages via outputDebug (you might need DbgView or a similar tool to view output)
+
+ You might choose several appenders to be logged on simultaneously
 
 Internals:
 <log4ahk> is implemented as singleton, so there is only one existing instance. Each change on <loglevel>,
@@ -98,7 +108,7 @@ f1() {
 ;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.4.0"
+	_version := "0.4.1"
 	shouldLog := 1
 	
 	static _indentLvl := 0
