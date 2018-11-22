@@ -108,7 +108,7 @@ f1() {
 ;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.4.1"
+	_version := "0.4.2"
 	shouldLog := 1
 	
 	static _indentLvl := 0
