@@ -108,7 +108,7 @@ f1() {
 ;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.4.1"
+	_version := "0.4.2"
 	shouldLog := 1
 	
 	static _indentLvl := 0
@@ -243,7 +243,10 @@ f1() {
 		thiscalldepth := 3
 
 		; Get the current Performance counter here, to be able to activate Placeholder %r and %R anytime ...
+		CounterCurr := 0
 		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
+		; Pre-Get the callstack
+		cs:= CallStack(deepness := thiscalldepth+20)
 
 		Loop tokens.Length() {
 			a := tokens[A_Index]
@@ -251,14 +254,28 @@ f1() {
 			if (a["Placeholder"] == "d") {
 				value := FormatTime(, "yyyy/MM/dd hh:mm:ss")
 			}
+			else if (a["Placeholder"] =="F") {	
+				value :=  cs[-thiscalldepth].file
+			}
 			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
+			}
+			else if (a["Placeholder"] =="i") {	
+				depth := cs[-thiscalldepth].depth
+				value := ""
+				loop depth
+					value := value . "__"
+			}
+			else if (a["Placeholder"] =="l") {	
+				value :=  cs[-thiscalldepth].function " in " cs[-thiscalldepth].file " (" value := cs[-thiscalldepth].line ")"
+			}
+			else if (a["Placeholder"] =="L") {	
+				value := cs[-thiscalldepth].line
 			}
 			else if (a["Placeholder"] == "m") {
 				value := str
 			}
 			else if (a["Placeholder"] =="M") {
-				cs:= CallStack(deepness := thiscalldepth+1)
 				value := cs[-thiscalldepth].function
 			}
 			else if (a["Placeholder"] == "P") {
@@ -313,9 +330,9 @@ f1() {
 	
 	__New() {
 		; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-		static init ;This is where the instance will be stored
+		static init := 0 ;This is where the instance will be stored
 		
-		if init ;This will return true if the class has already been created
+		if (init != 0) ;This will return true if the class has already been created
 			return init ;And it will return this instance rather than creating a new one
 		
 		init := This ; this will overwrite the init var with this instance
@@ -324,9 +341,11 @@ f1() {
 		this._layout := new this.layout()
 		this.appenders := []
 
+		CounterStart := 0
 		DllCall("QueryPerformanceCounter", "Int64*", CounterStart)
 		this._CounterStart := CounterStart
 		this._CounterPrev := CounterStart
+		freq := 0
 		DllCall("QueryPerformanceFrequency", "Int64*", freq)
 		this._CounterFreq := freq
 	}
@@ -377,7 +396,11 @@ f1() {
 	The following placeholders can be used within the layout string:
 
 	%d - Current date in yyyy/MM/dd hh:mm:ss format
+	%F - File where the logging event occurred
+	%i - Indentationstring according calldepth of calling method
 	%H - Hostname
+	%l - Fully qualified name of the calling method followed by the callers source the file name and line number between parentheses.
+	%L - Line number within the file where the log statement was issued
 	%m - The message to be logged
 	%M - Method or function where the logging request was issued
 	%P - pid of the current process
@@ -432,13 +455,6 @@ f1() {
 		}
 
 		__New() {
-			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-			static init
-			if init
-					return init
-			init := This
-
-			this._split()
 		}
 
 		/*
@@ -466,7 +482,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dHmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([diFHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
@@ -520,14 +536,14 @@ f1() {
 
 	Loglevels support the following needs
 
-		- hierarchize your log messages due to importance of the log message (from TRACE to FATAL)
+		- prioritize your log messages due to importance of the log message (from TRACE to FATAL)
 		- control which level of log messages are currently to be logged
 
 	Internals:
-		- Different hierarchical loglevels are supported
-  		- The hierachy levels are *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
-		- to log on a certain loglevel, separate methods are available (<trace>, <debug>, <info>, <warn>, <error>, <fatal>)
-		- To filter message to due current used loglevel use following syntax, set the property logger.loglevel.required to the requested level
+		- Different priorities/hierarchical loglevels are supported
+  		- The priorities are *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
+		- to log with a certain priority, separate methods are available (<trace>, <debug>, <info>, <warn>, <error>, <fatal>)
+		- To filter messages due currently desired loglevel, set the property logger.loglevel.required to the required loglevel
 	*/
 	class loglevel {
 		STATIC TRACE := 1
@@ -560,12 +576,6 @@ f1() {
 		}
 
 		__New() {
-			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-			static init
-			if init
-					return init
-			init := This
-
 			_required := 2
 			_current := 2
 		}
