@@ -246,7 +246,7 @@ f1() {
 		CounterCurr := 0
 		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
 		; Pre-Get the callstack
-		cs:= CallStack(deepness := thiscalldepth+1)
+		cs:= CallStack(deepness := thiscalldepth+20)
 
 		Loop tokens.Length() {
 			a := tokens[A_Index]
@@ -259,6 +259,12 @@ f1() {
 			}
 			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
+			}
+			else if (a["Placeholder"] =="i") {	
+				depth := cs[-thiscalldepth].depth
+				value := ""
+				loop depth
+					value := value . "__"
 			}
 			else if (a["Placeholder"] =="l") {	
 				value :=  cs[-thiscalldepth].function " in " cs[-thiscalldepth].file " (" value := cs[-thiscalldepth].line ")"
@@ -391,6 +397,7 @@ f1() {
 
 	%d - Current date in yyyy/MM/dd hh:mm:ss format
 	%F - File where the logging event occurred
+	%i - Indentationstring according calldepth of calling method
 	%H - Hostname
 	%l - Fully qualified name of the calling method followed by the callers source the file name and line number between parentheses.
 	%L - Line number within the file where the log statement was issued
@@ -475,7 +482,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([dFHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([diFHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
