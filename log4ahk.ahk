@@ -243,6 +243,7 @@ f1() {
 		thiscalldepth := 3
 
 		; Get the current Performance counter here, to be able to activate Placeholder %r and %R anytime ...
+		CounterCurr := 0
 		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
 		; Pre-Get the callstack
 		cs:= CallStack(deepness := thiscalldepth+1)
@@ -323,9 +324,9 @@ f1() {
 	
 	__New() {
 		; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-		static init ;This is where the instance will be stored
+		static init := 0 ;This is where the instance will be stored
 		
-		if init ;This will return true if the class has already been created
+		if (init != 0) ;This will return true if the class has already been created
 			return init ;And it will return this instance rather than creating a new one
 		
 		init := This ; this will overwrite the init var with this instance
@@ -334,9 +335,11 @@ f1() {
 		this._layout := new this.layout()
 		this.appenders := []
 
+		CounterStart := 0
 		DllCall("QueryPerformanceCounter", "Int64*", CounterStart)
 		this._CounterStart := CounterStart
 		this._CounterPrev := CounterStart
+		freq := 0
 		DllCall("QueryPerformanceFrequency", "Int64*", freq)
 		this._CounterFreq := freq
 	}
@@ -445,13 +448,6 @@ f1() {
 		}
 
 		__New() {
-			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-			static init
-			if init
-					return init
-			init := This
-
-			this._split()
 		}
 
 		/*
@@ -573,12 +569,6 @@ f1() {
 		}
 
 		__New() {
-			; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
-			static init
-			if init
-					return init
-			init := This
-
 			_required := 2
 			_current := 2
 		}

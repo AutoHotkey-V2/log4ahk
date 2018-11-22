@@ -1,9 +1,12 @@
+#Warn All
+#Warn LocalSameAsGlobal, Off
+
 #include %A_ScriptDir%\log4ahk.ahk
 
 ; #include %A_ScriptDir%\lib\SerDes.ahk
 
-;WinActivate "DebugView++"
-;OutputDebug "DBGVIEWCLEAR"
+WinActivate "DebugView++"
+OutputDebug "DBGVIEWCLEAR"
 
 
 logger := new log4ahk()
