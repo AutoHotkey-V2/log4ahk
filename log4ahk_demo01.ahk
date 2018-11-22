@@ -32,7 +32,7 @@ f1() {
 	logger.layout.required := "%d - %r - %R [%P] [%-5.5V] {%s - %-15.15M}{%H} %m"
 	logger.info("INFO - Test INFO - Lvl INFO - after change of layout")
 }
-
+/*
 ; Output: 
 [INFO ] {[AUTO-EXECUTE] }{NB00121} Running log4ahk - Version 0.4.0
 [TRACE] {[AUTO-EXECUTE] }{NB00121} Test TRACE - Lvl TRACE
@@ -40,3 +40,4 @@ f1() {
 [INFO ] {[AUTO-EXECUTE] }{NB00121} Test INFO - Lvl TRACE
 [INFO ] {f1             }{NB00121} Test INFO - Lvl INFO
 2018/11/19 07:27:55 - 8.60363052823162633 - 1.63673621445787609 [4332] [INFO ] {log4ahk_demo01.ahk - f1             }{COMPI} INFO - Test INFO - Lvl INFO - after change of layout
+*/

@@ -533,14 +533,14 @@ f1() {
 
 	Loglevels support the following needs
 
-		- hierarchize your log messages due to importance of the log message (from TRACE to FATAL)
+		- prioritize your log messages due to importance of the log message (from TRACE to FATAL)
 		- control which level of log messages are currently to be logged
 
 	Internals:
-		- Different hierarchical loglevels are supported
-  		- The hierachy levels are *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
-		- to log on a certain loglevel, separate methods are available (<trace>, <debug>, <info>, <warn>, <error>, <fatal>)
-		- To filter message to due current used loglevel use following syntax, set the property logger.loglevel.required to the requested level
+		- Different priorities/hierarchical loglevels are supported
+  		- The priorities are *trace* (1) <- *debug* (2) <- *info* (3) <- *warn* (4) <- *error* (5) <- *fatal* (6)
+		- to log with a certain priority, separate methods are available (<trace>, <debug>, <info>, <warn>, <error>, <fatal>)
+		- To filter messages due currently desired loglevel, set the property logger.loglevel.required to the required loglevel
 	*/
 	class loglevel {
 		STATIC TRACE := 1
