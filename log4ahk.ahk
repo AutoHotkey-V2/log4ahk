@@ -246,7 +246,7 @@ f1() {
 		CounterCurr := 0
 		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
 		; Pre-Get the callstack
-		cs:= CallStack(deepness := thiscalldepth+20)
+		cst:= CallStack(deepness := thiscalldepth+20)
 
 		Loop tokens.Length() {
 			a := tokens[A_Index]
@@ -255,28 +255,28 @@ f1() {
 				value := FormatTime(, "yyyy/MM/dd hh:mm:ss")
 			}
 			else if (a["Placeholder"] =="F") {	
-				value :=  cs[-thiscalldepth].file
+				value :=  cst[-thiscalldepth].file
 			}
 			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
 			}
 			else if (a["Placeholder"] =="i") {	
-				depth := cs[-thiscalldepth].depth
+				depth := cst[-thiscalldepth].depth
 				value := ""
 				loop depth
 					value := value . "__"
 			}
 			else if (a["Placeholder"] =="l") {	
-				value :=  cs[-thiscalldepth].function " in " cs[-thiscalldepth].file " (" value := cs[-thiscalldepth].line ")"
+				value :=  cst[-thiscalldepth].function " in " cst[-thiscalldepth].file " (" value := cst[-thiscalldepth].line ")"
 			}
 			else if (a["Placeholder"] =="L") {	
-				value := cs[-thiscalldepth].line
+				value := cst[-thiscalldepth].line
 			}
 			else if (a["Placeholder"] == "m") {
 				value := str
 			}
 			else if (a["Placeholder"] =="M") {
-				value := cs[-thiscalldepth].function
+				value := cst[-thiscalldepth].function
 			}
 			else if (a["Placeholder"] == "P") {
 				value := DllCall("GetCurrentProcessId")
