@@ -102,10 +102,10 @@ f1() {
 }
 
 ; Output: 
-;[TRACE] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test TRACE
-;[DEBUG] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test DEBUG
-;[INFO ] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test INFO
-;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
+;[TRACE] {# }{XYZ-COMP} TRACE - Test TRACE
+;[DEBUG] {# }{XYZ-COMP} TRACE - Test DEBUG
+;[INFO ] {# }{XYZ-COMP} TRACE - Test INFO
+;[INFO ] {f1}{XYZ-COMP} INFO - Test INFO
 ===
 */
 	_version := "0.4.2"
@@ -247,6 +247,10 @@ f1() {
 		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
 		; Pre-Get the callstack
 		cst:= CallStack(deepness := thiscalldepth+20)
+		cstlength := 0
+		for key, val in cst {
+			cstlength := cstlength + 1
+		}
 
 		Loop tokens.Length() {
 			a := tokens[A_Index]
@@ -292,6 +296,38 @@ f1() {
 			}
 			else if (a["Placeholder"] == "S") {
 				value := A_ScriptFullPath
+			}
+			else if (a["Placeholder"] == "T") {
+				iCnt := 0
+				start := 0
+				ende := cstlength-thiscalldepth
+				if (a["curly"] != 0) {
+					Pattern := "\{(\-{0,1}[0-9]{0,2})[\:]{0,1}(\-{0,1}[0-9]{0,2})\}"
+    				FoundPos := RegExMatch(a["curly"], pattern, Match) 
+					iStart := 0
+					iEnde := 0				
+					if (Match[1]) 
+						iStart := Integer(Match[1])
+					if (Match[2]) 	
+						iEnde := Integer(Match[2])
+					if (iStart > 0)
+						start := iStart
+					else if (iStart < 0)
+						start := ende - iStart
+					if (iEnde < 0) 
+						ende := ende - iEnde
+					else if (iEnde > 0)
+						ende := iEnde
+				}
+				value := ""
+				for key, val in cst {
+					if ((A_Index >= start ) & (A_Index <= ende)) {
+						iCnt := iCnt+1
+						if (iCnt > 1 )
+							value := value . "=>"
+		 				value := value . val.function
+					}
+				}
 			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
@@ -408,16 +444,28 @@ f1() {
 	%R - Number of milliseconds elapsed from last logging event to current logging event 
 	%s - Name of the current script
 	%S - Fullpath of the current script
+	%T - Stack trace of the function called
 	%V - Log level
 
 	Quantify Placeholders:
 
-	All placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>:
+	Most placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>:
 
 	%20M - Reserve 20 chars for the method, right-justify and fill with blanks if it is shorter
 	%-20M - Same as %20c, but left-justify and fill the right side with blanks
     %09r - Zero-pad the number of milliseconds to 9 digits
     %.8M - Specify the maximum field with and have the formatter cut off the rest of the value
+
+	Fine tuning with curlies: 
+
+	Some placeholders have special functions defined if you add curlies with content after them:
+
+	%T - complete Stack Trace of the function called
+	%T{3:} - Stack Trace starting at depth 3, ending at maximum depth (maximum depth is the function called)
+	%T{3:4} - Stack Trace starting at depth 3, ending at depth 4
+	%T{-3:} - Stack Trace starting 3 from maximum depth, ending at maximum depth
+	%T{:-4}  - Stack Trace starting at mimumum depth, ending at depth 4
+	%T{:} - complete Stack Trace (equivalent to %T)
 
 	Usage:
 	 
@@ -448,7 +496,7 @@ f1() {
 					FormatQuantify := "{1:" this._tokens[A_Index]["Quantifier"] "s}"
 					PlaceholderExpanded := Format(FormatQuantify, PlaceholderExpanded)
 				}
-				PatternExpanded := PlaceholderExpanded this._tokens[A_Index]["Curly"]
+				PatternExpanded := PlaceholderExpanded
 				str := RegExReplace(str, this._tokens[A_Index]["Pattern"], PatternExpanded)
 							}
 			return str
@@ -482,7 +530,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([diFHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([diFHlLmMPrRsSTV]{1})(\{\-{0,1}[0-9]{0,2}[\:]{0,1}\-{0,1}[0-9]{0,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
