@@ -108,7 +108,7 @@ f1() {
 ;[INFO ] {f1}{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.4.2"
+	_version := "0.4.3"
 	shouldLog := 1
 	appenders := []
 
