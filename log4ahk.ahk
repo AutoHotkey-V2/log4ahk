@@ -110,10 +110,6 @@ f1() {
 */
 	_version := "0.4.2"
 	shouldLog := 1
-	
-	static _indentLvl := 0
-	shouldIndent := 1
-
 	appenders := []
 
 	
@@ -341,29 +337,6 @@ f1() {
 		return ph
 	}
 
-	_indent(str) {
-		out := str
-		if (this.shouldIndent) {
-			x1 := SubStr(str, 1, 1)
-			if (x1 = "<") {
-				this._indentLvl := this._indentLvl - 1
-			} 
-
-			i := 0
-			indentStr := ""
-			while (i < this._indentLvl) {
-				indentStr := indentStr "__"
-				i := i + 1
-			}
-			out := indentStr str
-
-			if (x1 = ">") {
-				this._indentLvl := this._indentLvl + 1
-			}
-		}
-		return out
-	}
-	
 	__New() {
 		; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
 		static init := 0 ;This is where the instance will be stored
@@ -456,6 +429,7 @@ f1() {
     %09r - Zero-pad the number of milliseconds to 9 digits
     %.8M - Specify the maximum field with and have the formatter cut off the rest of the value
 
+	
 	Fine tuning with curlies: 
 
 	Some placeholders have special functions defined if you add curlies with content after them:
@@ -464,7 +438,7 @@ f1() {
 	%T{3:} - Stack Trace starting at depth 3, ending at maximum depth (maximum depth is the function called)
 	%T{3:4} - Stack Trace starting at depth 3, ending at depth 4
 	%T{-3:} - Stack Trace starting 3 from maximum depth, ending at maximum depth
-	%T{:-4}  - Stack Trace starting at mimumum depth, ending at depth 4
+	%T{:-4}  - Stack Trace starting at mimumum depth, ending 4 from maximum depth
 	%T{:} - complete Stack Trace (equivalent to %T)
 
 	Usage:
