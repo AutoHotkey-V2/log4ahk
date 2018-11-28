@@ -9,7 +9,7 @@
 # ------------------------------------------------------------------------
 
 Title: Logging for AutoHotkey
-Subtitle: Version 0.4.1
+Subtitle: Version 0.4.3
 
 Timestamp: dd.month.year
 #    m     - Single digit month, when possible.  January is "1".

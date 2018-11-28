@@ -102,18 +102,14 @@ f1() {
 }
 
 ; Output: 
-;[TRACE] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test TRACE
-;[DEBUG] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test DEBUG
-;[INFO ] {[AUTO-EXECUTE] }{XYZ-COMP} TRACE - Test INFO
-;[INFO ] {f1             }{XYZ-COMP} INFO - Test INFO
+;[TRACE] {# }{XYZ-COMP} TRACE - Test TRACE
+;[DEBUG] {# }{XYZ-COMP} TRACE - Test DEBUG
+;[INFO ] {# }{XYZ-COMP} TRACE - Test INFO
+;[INFO ] {f1}{XYZ-COMP} INFO - Test INFO
 ===
 */
-	_version := "0.4.2"
+	_version := "0.4.3"
 	shouldLog := 1
-	
-	static _indentLvl := 0
-	shouldIndent := 1
-
 	appenders := []
 
 	
@@ -246,7 +242,11 @@ f1() {
 		CounterCurr := 0
 		DllCall("QueryPerformanceCounter", "Int64*", CounterCurr)
 		; Pre-Get the callstack
-		cs:= CallStack(deepness := thiscalldepth+20)
+		cst:= CallStack(deepness := thiscalldepth+20)
+		cstlength := 0
+		for key, val in cst {
+			cstlength := cstlength + 1
+		}
 
 		Loop tokens.Length() {
 			a := tokens[A_Index]
@@ -255,28 +255,28 @@ f1() {
 				value := FormatTime(, "yyyy/MM/dd hh:mm:ss")
 			}
 			else if (a["Placeholder"] =="F") {	
-				value :=  cs[-thiscalldepth].file
+				value :=  cst[-thiscalldepth].file
 			}
 			else if (a["Placeholder"] == "H") {
 				value := A_ComputerName
 			}
 			else if (a["Placeholder"] =="i") {	
-				depth := cs[-thiscalldepth].depth
+				depth := cst[-thiscalldepth].depth
 				value := ""
 				loop depth
 					value := value . "__"
 			}
 			else if (a["Placeholder"] =="l") {	
-				value :=  cs[-thiscalldepth].function " in " cs[-thiscalldepth].file " (" value := cs[-thiscalldepth].line ")"
+				value :=  cst[-thiscalldepth].function " in " cst[-thiscalldepth].file " (" value := cst[-thiscalldepth].line ")"
 			}
 			else if (a["Placeholder"] =="L") {	
-				value := cs[-thiscalldepth].line
+				value := cst[-thiscalldepth].line
 			}
 			else if (a["Placeholder"] == "m") {
 				value := str
 			}
 			else if (a["Placeholder"] =="M") {
-				value := cs[-thiscalldepth].function
+				value := cst[-thiscalldepth].function
 			}
 			else if (a["Placeholder"] == "P") {
 				value := DllCall("GetCurrentProcessId")
@@ -293,6 +293,38 @@ f1() {
 			else if (a["Placeholder"] == "S") {
 				value := A_ScriptFullPath
 			}
+			else if (a["Placeholder"] == "T") {
+				iCnt := 0
+				start := 0
+				ende := cstlength-thiscalldepth
+				if (a["curly"] != 0) {
+					Pattern := "\{(\-{0,1}[0-9]{0,2})[\:]{0,1}(\-{0,1}[0-9]{0,2})\}"
+    				FoundPos := RegExMatch(a["curly"], pattern, Match) 
+					iStart := 0
+					iEnde := 0				
+					if (Match[1]) 
+						iStart := Integer(Match[1])
+					if (Match[2]) 	
+						iEnde := Integer(Match[2])
+					if (iStart > 0)
+						start := iStart
+					else if (iStart < 0)
+						start := ende - iStart
+					if (iEnde < 0) 
+						ende := ende - iEnde
+					else if (iEnde > 0)
+						ende := iEnde
+				}
+				value := ""
+				for key, val in cst {
+					if ((A_Index >= start ) & (A_Index <= ende)) {
+						iCnt := iCnt+1
+						if (iCnt > 1 )
+							value := value . "=>"
+		 				value := value . val.function
+					}
+				}
+			}
 			else if (a["Placeholder"] == "V") {
 				value := this._loglevel.tr(this._loglevel.current)
 			}
@@ -305,29 +337,6 @@ f1() {
 		return ph
 	}
 
-	_indent(str) {
-		out := str
-		if (this.shouldIndent) {
-			x1 := SubStr(str, 1, 1)
-			if (x1 = "<") {
-				this._indentLvl := this._indentLvl - 1
-			} 
-
-			i := 0
-			indentStr := ""
-			while (i < this._indentLvl) {
-				indentStr := indentStr "__"
-				i := i + 1
-			}
-			out := indentStr str
-
-			if (x1 = ">") {
-				this._indentLvl := this._indentLvl + 1
-			}
-		}
-		return out
-	}
-	
 	__New() {
 		; Singleton class (see https://autohotkey.com/boards/viewtopic.php?p=175344#p175344)
 		static init := 0 ;This is where the instance will be stored
@@ -408,16 +417,29 @@ f1() {
 	%R - Number of milliseconds elapsed from last logging event to current logging event 
 	%s - Name of the current script
 	%S - Fullpath of the current script
+	%T - Stack trace of the function called
 	%V - Log level
 
 	Quantify Placeholders:
 
-	All placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>:
+	Most placeholders can be extended with formatting instructions, just similar to <format: https://lexikos.github.io/v2/docs/commands/Format.htm>:
 
 	%20M - Reserve 20 chars for the method, right-justify and fill with blanks if it is shorter
 	%-20M - Same as %20c, but left-justify and fill the right side with blanks
     %09r - Zero-pad the number of milliseconds to 9 digits
     %.8M - Specify the maximum field with and have the formatter cut off the rest of the value
+
+	
+	Fine tuning with curlies: 
+
+	Some placeholders have special functions defined if you add curlies with content after them:
+
+	%T - complete Stack Trace of the function called
+	%T{3:} - Stack Trace starting at depth 3, ending at maximum depth (maximum depth is the function called)
+	%T{3:4} - Stack Trace starting at depth 3, ending at depth 4
+	%T{-3:} - Stack Trace starting 3 from maximum depth, ending at maximum depth
+	%T{:-4}  - Stack Trace starting at mimumum depth, ending 4 from maximum depth
+	%T{:} - complete Stack Trace (equivalent to %T)
 
 	Usage:
 	 
@@ -448,7 +470,7 @@ f1() {
 					FormatQuantify := "{1:" this._tokens[A_Index]["Quantifier"] "s}"
 					PlaceholderExpanded := Format(FormatQuantify, PlaceholderExpanded)
 				}
-				PatternExpanded := PlaceholderExpanded this._tokens[A_Index]["Curly"]
+				PatternExpanded := PlaceholderExpanded
 				str := RegExReplace(str, this._tokens[A_Index]["Pattern"], PatternExpanded)
 							}
 			return str
@@ -482,7 +504,7 @@ f1() {
 			this._tokens := []
 
 			haystack := this.required
-			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([diFHlLmMPrRsSV]{1})(\{[0-9]{1,2}\})?)"
+			Pattern := "(%([-+ 0#]?[0-9]{0,3}[.]?[0-9]{0,3})([diFHlLmMPrRsSTV]{1})(\{\-{0,1}[0-9]{0,2}[\:]{0,1}\-{0,1}[0-9]{0,2}\})?)"
     		While (FoundPos := RegExMatch(haystack, pattern, Match, FoundPos + len)) {
       			len := Match.len(0)
 				token := []
