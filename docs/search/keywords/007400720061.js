@@ -1,1 +1,1 @@
-NDSearch.OnPrefixDataLoaded("tra",["Function"],[["trace",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk.trace","AutoHotKeyClass:log4ahk:trace"]]]]);
+NDSearch.OnPrefixDataLoaded("tra",["Function"],[["trace",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk.trace","AutoHotKeyClass:log4ahk:trace"]]],["trace2",,[["log4ahk",,,,0,"File:log4ahk.ahk:log4ahk.trace2","AutoHotKeyClass:log4ahk:trace2"]]]]);
