@@ -118,6 +118,17 @@ f1() {
 	; Group: Public Methods		
 
 	/*
+	Method: trace2
+	Logs the given string at TRACE2 level
+	
+	Parameters:
+	
+		str - String to be logged
+	*/
+	trace2(str) {
+		this._log(str, this._loglevel.TRACE2)
+	}
+	/*
 	Method: trace
 	Logs the given string at TRACE level
 	
@@ -568,12 +579,13 @@ f1() {
 		- To filter messages due currently desired loglevel, set the property logger.loglevel.required to the required loglevel
 	*/
 	class loglevel {
-		STATIC TRACE := 1
-		STATIC DEBUG := 2
-		STATIC INFO := 3
-		STATIC WARN := 4
-		STATIC ERROR := 5
-		STATIC FATAL := 6
+		STATIC TRACE2 := 1
+		STATIC TRACE := 2
+		STATIC DEBUG := 3
+		STATIC INFO := 4
+		STATIC WARN := 5
+		STATIC ERROR := 6
+		STATIC FATAL := 7
 
 		; --------------------------------------------------------------------------------------
 		; Group: Private Methods		
@@ -590,8 +602,8 @@ f1() {
 		String describing the choosen loglevel (to be used within <layout>)
 		*/
 		tr(lvl){
-			translation := ["TRACE","DEBUG","INFO","WARN","ERROR","FATAL"]
-			if ((lvl >= this.TRACE) & (lvl <= this.FATAL)) {
+			translation := ["TRACE2","TRACE","DEBUG","INFO","WARN","ERROR","FATAL"]
+			if ((lvl >= this.TRACE2) & (lvl <= this.FATAL)) {
 				return translation[lvl]
 			}
 			return "LOG"
@@ -614,8 +626,8 @@ f1() {
 		corrected loglevel
 		*/
 		_limit(lvl) {
-			if (lvl < this.TRACE) {
-				return this.TRACE
+			if (lvl < this.TRACE2) {
+				return this.TRACE2
 			}
 			if (lvl > this.FATAL) {
 				return this.FATAL

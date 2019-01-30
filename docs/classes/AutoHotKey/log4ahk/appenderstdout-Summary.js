@@ -1,1 +1,1 @@
-NDFramePage.OnPageTitleLoaded("AutoHotKeyClass:log4ahk.appenderstdout","appenderstdout");NDSummary.OnSummaryLoaded("AutoHotKeyClass:log4ahk.appenderstdout",[["AutoHotKey","AutoHotKey"]],[["Classes","Class"]],[[14,0,0,"<span class=\"Qualifier\">log4ahk.</span>&#8203;appenderstdout"]]);
+NDFramePage.OnPageTitleLoaded("AutoHotKeyClass:log4ahk.appenderstdout","appenderstdout");NDSummary.OnSummaryLoaded("AutoHotKeyClass:log4ahk.appenderstdout",[["AutoHotKey","AutoHotKey"]],[["Classes","Class"]],[[15,0,0,"<span class=\"Qualifier\">log4ahk.</span>&#8203;appenderstdout"]]);
