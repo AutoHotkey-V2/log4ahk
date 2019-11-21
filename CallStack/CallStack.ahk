@@ -16,7 +16,7 @@ Version 1.0.2
 
 Description:
 	Gets the current callstack, containing information like functionname, filename and linenumber of the function.
-	An associative Attay is returned, containing array elements in range of 0 to -calldepth (negative numbers). 
+	An associative Array is returned, containing array elements in range of 0 to -calldepth (negative numbers). 
 	Index 0 contains the info about current function, whereas Index -1 contains info about the parent (caller) 
 	of the current function. (-2: Grandparent ...)
 
@@ -35,8 +35,10 @@ Parameter:
 	* getContents (optional, default := true) - get the contents of the line, where the current function is called
 */
 
+global stack := Map()
+
 CallStack(deepness :=100, getContents := true) {
-	stack := {}
+	global stack
 	max := 0
 	loop deepness {
 		lvl := -1 - deepness + A_Index

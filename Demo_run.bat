@@ -1,0 +1,1 @@
+.\_build\AutoHotkey.exe log4ahk_demo01.ahk

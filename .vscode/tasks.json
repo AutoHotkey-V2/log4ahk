@@ -1,0 +1,43 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run the current AHK-file",
+			"type": "shell",
+			"script": "${workspaceFolder}/_build/autohotkey.exe ${file}",
+			"windows": {
+				"command": "${workspaceFolder}\\_build\\autohotkey.exe ${file}"
+			},
+			"presentation": {
+				"panel": "shared"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"options": {
+				"cwd": "${fileDirname}"
+			}
+		},
+		{
+			"label": "Build the documentation",
+			"type": "shell",
+			"script": "${workspaceRoot}/_build/autohotkey.exe ${workspaceRoot}/_build/mkdoc.ahk",
+			"windows": {
+				"command": "${workspaceRoot}\\_build\\autohotkey.exe ${workspaceRoot}\\_build\\mkdoc.ahk"
+			},
+			"presentation": {
+				"panel": "shared"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"options": {
+				"cwd": "${workspaceRoot}/_build"
+			}
+		}
+	]
+}
