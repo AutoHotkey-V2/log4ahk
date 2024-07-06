@@ -11,7 +11,7 @@ Simple logging with AutoHotkey - supporting some features as provided in [log4j]
 Include `log4ahk.ahk` from the `lib` folder into your project using standard AutoHotkey-include methods.
 
 ```autohotkey
-#include <log4ahk.ahk>
+#include <log4ahk>
 
 ; Initialize the logger
 logger := new log4ahk()
